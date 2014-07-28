@@ -1,0 +1,92 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/tx  
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/task 
+	http://www.springframework.org/schema/task/spring-task-3.0.xsd"> 
+	
+	<context:component-scan base-package="com.essot.web.controller" />
+	<!-- <context:component-scan base-package="com.essot.web.delegate" /> -->
+	
+	<context:property-placeholder location="classpath:jdbc.properties" />
+	<tx:annotation-driven transaction-manager="hibernateTransactionManager" />
+	
+	<bean id="categoryDelegate" class="com.essot.web.delegate.concrete.ProductCategoryDelegate" />
+	<bean id="productCategoryDelegate" class="com.essot.web.delegate.concrete.ProductCategoryXProductDelegate" />
+	<bean id="productDelegate" class="com.essot.web.delegate.concrete.ProductDelegate" />
+	<bean id="uploadDelegate" class="com.essot.web.upload.DataUploadDelegate" />
+	
+	
+	<bean id="productCategoryDAO" class="com.essot.web.backend.dao.concrete.ProductCategoryDAO" />
+	<bean id="productCategoryXProductDAO" class="com.essot.web.backend.dao.concrete.ProductCategoryXProductDAO" />
+	<bean id="productDAO" class="com.essot.web.backend.dao.concrete.ProductDAO" />
+	<bean id="productFeatureDAO" class="com.essot.web.backend.dao.concrete.ProductXFeatureDAO" />
+	<bean id="productTechSpecDAO" class="com.essot.web.backend.dao.concrete.ProductXTechSpecDAO" />
+	<bean id="productEnCodeDAO" class="com.essot.web.backend.dao.concrete.ProductXEnCodeDAO" />
+
+	<bean id="resourceReader" class="com.essot.web.util.ResourceReader" />
+
+	<bean id="messageSource"
+        class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>com/essot/bundle/messages</value>
+            </list>
+        </property>
+    </bean>
+ 
+    <bean id="dataSource"  
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+        <property name="driverClassName" value="${jdbc.driverClassName}" />  
+        <property name="url" value="${jdbc.databaseurl}" />  
+        <property name="username" value="${jdbc.username}" />  
+        <property name="password" value="${jdbc.password}" />  
+    </bean>
+ 
+ 
+    <bean id="sessionFactory"  
+        class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">  
+        <property name="dataSource" ref="dataSource" />  
+        <property name="annotatedClasses">  
+            <list>  
+                <value>com.essot.web.backend.entity.concrete.Product</value>
+        		<value>com.essot.web.backend.entity.concrete.ProductCategory</value>
+        		<value>com.essot.web.backend.entity.concrete.ProductCategoryXProduct</value>
+        		<value>com.essot.web.backend.entity.concrete.ProductXFeature</value>
+        		<value>com.essot.web.backend.entity.concrete.ProductXTechSpec</value>
+        		<value>com.essot.web.backend.entity.concrete.ProductXENCode</value>
+            </list>  
+        </property>  
+        <property name="hibernateProperties">  
+            <props>  
+                <prop key="hibernate.dialect">${jdbc.hibernate.dialect}</prop>  
+                <prop key="hibernate.show_sql">${jdbc.hibernate.show_sql}</prop>  
+            </props>  
+        </property>  
+    </bean> 
+ 
+    <bean id="hibernateTransactionManager"  
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager">  
+        <property name="sessionFactory" ref="sessionFactory" />  
+    </bean>
+    
+    <task:scheduler id="scheduler" pool-size="10"/>
+    <task:executor id="executor" pool-size="10"/>
+    <task:annotation-driven scheduler="scheduler" executor="executor"/>
+     
+    <bean id="excelHelper" class="com.essot.web.upload.ExcelDataHelper" />
+    <bean id="daoFactory" class="com.essot.web.backend.dao.DAOFactory" />
+    
+    <bean id="essotDataScheduler" class="com.essot.web.crons.EssotDataScheduler" />
+     
+    <task:scheduled-tasks scheduler="scheduler">
+        <task:scheduled ref="essotDataScheduler" method="execute" cron="*/5 * * * * ?"/>
+    </task:scheduled-tasks>
+</beans>
