@@ -20,6 +20,7 @@ public class UploadService {
 	
 	@Autowired
 	private DataUploadDelegate uploadDelegate;
+	/*Test*/
 	
 	private static final String SUCCESS_SERVICE = "service";
 	private static final String FAILURE_SERVICE = "failure";
