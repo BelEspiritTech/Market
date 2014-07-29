@@ -220,6 +220,24 @@ public class ExcelDataHelper {
 	 */
 	public void pushEnCodes(BasicExcelData data){
 		List<String> enCodes = data.getEncodes();
+		
+		//getAll EnCodes
+		ProductXENCode blank = new ProductXENCode();
+		blank.setSkuName(data.getSkuName());
+		
+		Collection<Object> skuNameList = new ArrayList<Object>();
+		skuNameList.add(data.getSkuName());
+		
+		List<IEssotEntity> enCodeList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuNameList);
+		
+		if(enCodeList != null && !enCodeList.isEmpty()){
+			for(IEssotEntity enCode : enCodeList ) {
+				if(enCodes.contains(((ProductXENCode)enCode).getEnCode())){
+					enCodes.remove(((ProductXENCode)enCode).getEnCode());
+				}							
+			}
+		}
+		
 		for(String enCode : enCodes){
 			ProductXENCode entity = new ProductXENCode();
 			
@@ -252,6 +270,9 @@ public class ExcelDataHelper {
 		
 		if(featureList != null && !featureList.isEmpty()){
 			for(IEssotEntity feature : featureList ) {
+				if(features.contains(((ProductXFeature)feature).getValue())){
+					features.remove(((ProductXFeature)feature).getValue());
+				}
 				if(maxValue < ((ProductXFeature)feature).getFeatureKey()){
 					maxValue = ((ProductXFeature)feature).getFeatureKey();
 				}				
@@ -284,6 +305,23 @@ public class ExcelDataHelper {
 	 */
 	public void pushTechSpecs(BasicExcelData data){
 		List<String> specs = data.getTechSpecs();
+		
+		//getAll EnCodes
+		ProductXTechSpec blank = new ProductXTechSpec();
+		blank.setSkuName(data.getSkuName());
+		
+		Collection<Object> skuNameList = new ArrayList<Object>();
+		skuNameList.add(data.getSkuName());
+		
+		List<IEssotEntity> specList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuNameList);
+		
+		if(specList != null && !specList.isEmpty()){
+			for(IEssotEntity techSpec : specList ) {
+				if(specs.contains((((ProductXTechSpec)techSpec).getTechKey())+":"+(((ProductXTechSpec)techSpec).getValue()))){
+					specs.remove((((ProductXTechSpec)techSpec).getTechKey())+":"+(((ProductXTechSpec)techSpec).getValue()));
+				}							
+			}
+		}
 		for(String spec : specs){
 			ProductXTechSpec entity = new ProductXTechSpec();
 			String[] splitSpec = spec.split(":");
