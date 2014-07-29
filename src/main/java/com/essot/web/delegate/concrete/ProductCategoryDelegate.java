@@ -108,15 +108,17 @@ public class ProductCategoryDelegate extends EssotDelegate {
 		if((MenuUtil.getCategories() == null || MenuUtil.getCategories().isEmpty())){
 			List<IEssotEntity> dbData = productCategoryDAO.readAllData();
 			for(IEssotEntity category :dbData){
-				MenuData item = new MenuData();
-				
-				item.setCategoryID(((ProductCategory)category).getProductCategoryKey());
-				item.setCategoryName(((ProductCategory)category).getCategoryTitle());
-				item.setPriority(((ProductCategory)category).getPriority());
-				item.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
-				
-				data.add(item);
-				MenuUtil.addCategoryToCache(item);
+				if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
+					MenuData item = new MenuData();
+					
+					item.setCategoryID(((ProductCategory)category).getProductCategoryKey());
+					item.setCategoryName(((ProductCategory)category).getCategoryTitle());
+					item.setPriority(((ProductCategory)category).getPriority());
+					item.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
+					
+					data.add(item);
+					MenuUtil.addCategoryToCache(item);
+				}
 			}
 		}
 		

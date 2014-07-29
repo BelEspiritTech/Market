@@ -59,26 +59,31 @@ public class ProductCategoryXProductDelegate extends EssotDelegate {
 		
 		if(categoryProductList != null && !categoryProductList.isEmpty()){
 			for(IEssotEntity categoryProduct : categoryProductList){
-				relatedSKUNames.add(((ProductCategoryXProduct)categoryProduct).getSkuName());
+				if("Y".equalsIgnoreCase(((ProductCategoryXProduct)categoryProduct).getActiveFlag())){
+					relatedSKUNames.add(((ProductCategoryXProduct)categoryProduct).getSkuName());
+				}
 			}
 		}
 		
 		List<IEssotEntity>  productList =  productDAO.getFilteredListOnPrimarKey(relatedSKUNames);
 		if(productList != null && !productList.isEmpty()){
 			for(IEssotEntity product : productList){
-				ProductCategoryDetails details = new ProductCategoryDetails();
-				
-				details.setDescription(((Product)product).getDescription());
-				details.setName(((Product)product).getName());
-				details.setSkuName(((Product)product).getSkuName());
-				details.setPrice(((Product)product).getB2cNowPrice());
-				
-				if(((Product)product).getPriority() != null && ((Product)product).getPriority() > 0 && ((Product)product).getPriority() <= 3){
-					bannerList.add(((Product)product).getSkuName());
+				if("Y".equalsIgnoreCase(((Product)product).getActiveFlag())){
+					ProductCategoryDetails details = new ProductCategoryDetails();
+					
+					details.setDescription(((Product)product).getDescription());
+					details.setName(((Product)product).getName());
+					details.setSkuName(((Product)product).getSkuName());
+					details.setPrice(((Product)product).getB2cNowPrice());
+					
+					if(((Product)product).getPriority() != null && ((Product)product).getPriority() > 0 && ((Product)product).getPriority() <= 3){
+						bannerList.add(((Product)product).getSkuName());
+					}
+					
+					categoryDetails.add(details);
 				}
-				
-				categoryDetails.add(details);
 			}
+				
 		}
 		
 		response.setBannerList(bannerList);
