@@ -148,7 +148,7 @@ public class ExcelDataHelper {
 		if(!isExist){
 			Product entity = new Product();
 			
-			entity.setActiveFlag("Y");
+			entity.setActiveFlag(data.getActiveFlag());
 			entity.setCreatedBy(0);
 			entity.setCreationDate(new Date());
 			entity.setSkuName(data.getSkuName());
@@ -162,6 +162,7 @@ public class ExcelDataHelper {
 			entity.setComponentSubType(0);
 			entity.setComponentType(0);
 			entity.setDescription(data.getShortDesc());
+			entity.setLongDescription(data.getLongDesc());
 			entity.setEndDateActive(new Date());
 			entity.setIsMarkedForDeletion(0);
 			entity.setLocalUpdateFlag("");
@@ -196,6 +197,8 @@ public class ExcelDataHelper {
 			//Product Already exists. Update product
 			blank.setB2cNowPrice(data.getPrice());
 			blank.setDescription(data.getShortDesc());
+			blank.setLongDescription(data.getLongDesc());
+			blank.setActiveFlag(data.getActiveFlag());
 			blank.setName(data.getProductName());
 			
 			this.updateEntity(blank);

@@ -31,6 +31,9 @@ public class Product implements IEssotEntity{
 	@Column(name= "DESCRIPTION")
 	private String 	description;
 	
+	@Column(name= "LONG_DESCRIPTION")
+	private String 	longDescription;
+	
 	@Column(name= "COMPONENT_TYPE")
 	private Integer componentType;
 	
@@ -478,5 +481,13 @@ public class Product implements IEssotEntity{
 
 	public void setPriority(Integer priority) {
 		this.priority = priority;
-	}		
+	}
+	public String getLongDescription() {
+		return longDescription;
+	}
+
+	public void setLongDescription(String longDescription) {
+		this.longDescription = longDescription;
+	}
+	
 }

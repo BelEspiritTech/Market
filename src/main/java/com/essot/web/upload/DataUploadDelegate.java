@@ -122,17 +122,19 @@ public class DataUploadDelegate {
 	 * @param subCategoryCell
 	 */
 	private void processProductData(Row currentRow){
-		Cell skuCell 	 	 = currentRow.getCell(3, Row.RETURN_BLANK_AS_NULL);
-		Cell productNameCell = currentRow.getCell(4, Row.RETURN_BLANK_AS_NULL);
-		Cell shortDescCell 	 = currentRow.getCell(5, Row.RETURN_BLANK_AS_NULL);
-		Cell longDescCell 	 = currentRow.getCell(6, Row.RETURN_BLANK_AS_NULL);
-		Cell priceCell 		 = currentRow.getCell(9, Row.RETURN_BLANK_AS_NULL);
+		Cell skuCell 	 	 = currentRow.getCell(2, Row.RETURN_BLANK_AS_NULL);
+		Cell productNameCell = currentRow.getCell(3, Row.RETURN_BLANK_AS_NULL);
+		Cell shortDescCell 	 = currentRow.getCell(4, Row.RETURN_BLANK_AS_NULL);
+		Cell longDescCell 	 = currentRow.getCell(5, Row.RETURN_BLANK_AS_NULL);
+		Cell priceCell 		 = currentRow.getCell(6, Row.RETURN_BLANK_AS_NULL);
+		Cell activeFlagCell  =currentRow.getCell(7, Row.RETURN_BLANK_AS_NULL);
 		
 		String skuID  		= skuCell != null ? skuCell.getStringCellValue() : null;
 		String productName  = productNameCell != null ? productNameCell.getStringCellValue() : null;
 		String shortDesc  	= shortDescCell != null ? shortDescCell.getStringCellValue() : null;
 		String longDesc  	= longDescCell != null ? longDescCell.getStringCellValue() : null;
 		Double price  		= priceCell != null ? priceCell.getNumericCellValue() : null;
+		String activeFlag   = activeFlagCell != null ? activeFlagCell.getStringCellValue():null;
 		
 		BasicExcelData data = this.getExcelData();
 		
@@ -147,15 +149,15 @@ public class DataUploadDelegate {
 				data.setShortDesc(shortDesc);
 				data.setLongDesc(longDesc);
 				data.setPrice(new Integer(price.intValue()));
-				
+				data.setActiveFlag(activeFlag);
 				//save product
 				excelHelper.updateProductInfo(data);
 			}			
 		}
 		
-		Cell enCodeCell   = currentRow.getCell(2, Row.RETURN_BLANK_AS_NULL);
-		Cell featureCell  = currentRow.getCell(7, Row.RETURN_BLANK_AS_NULL);
-		Cell techSpecCell = currentRow.getCell(8, Row.RETURN_BLANK_AS_NULL);
+		Cell enCodeCell   = currentRow.getCell(8, Row.RETURN_BLANK_AS_NULL);
+		Cell featureCell  = currentRow.getCell(9, Row.RETURN_BLANK_AS_NULL);
+		Cell techSpecCell = currentRow.getCell(10, Row.RETURN_BLANK_AS_NULL);
 		
 		String enCode   = enCodeCell != null ? enCodeCell.getStringCellValue() : null;
 		String feature  = featureCell != null ? featureCell.getStringCellValue() : null;

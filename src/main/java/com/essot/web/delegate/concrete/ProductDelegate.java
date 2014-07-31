@@ -69,7 +69,7 @@ public class ProductDelegate extends EssotDelegate {
 				productDetails.setName(((Product)product).getName());
 				productDetails.setSkuName(((Product)product).getSkuName());
 				productDetails.setPrice(((Product)product).getB2cNowPrice());
-				productDetails.setLongDescription(((Product)product).getDescription());
+				productDetails.setLongDescription(((Product)product).getLongDescription());
 				
 				List<IEssotEntity> features =  productFeatureDAO.getFilteredListOnPrimarKey(productSKUNames);
 				

@@ -19,6 +19,8 @@ public class BasicExcelData {
 	
 	private Integer price;
 	
+	private String activeFlag;
+	
 	private List<String> encodes = new ArrayList<String>();
 	
 	private List<String> features = new ArrayList<String>();
@@ -188,4 +190,14 @@ public class BasicExcelData {
 	public void addTechSpec(String techSpec){
 		this.techSpecs.add(techSpec);
 	}
+
+	public String getActiveFlag() {
+		return activeFlag;
+	}
+
+	public void setActiveFlag(String activeFlag) {
+		this.activeFlag = activeFlag;
+	}
+	
+
 }
