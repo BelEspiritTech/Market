@@ -84,9 +84,9 @@
     <bean id="excelHelper" class="com.essot.web.upload.ExcelDataHelper" />
     <bean id="daoFactory" class="com.essot.web.backend.dao.DAOFactory" />
     
-    <bean id="essotDataScheduler" class="com.essot.web.crons.EssotDataScheduler" />
+    <!-- <bean id="essotDataScheduler" class="com.essot.web.crons.EssotDataScheduler" />
      
     <task:scheduled-tasks scheduler="scheduler">
         <task:scheduled ref="essotDataScheduler" method="execute" cron="*/5 * * * * ?"/>
-    </task:scheduled-tasks>
+    </task:scheduled-tasks>-->
 </beans>
