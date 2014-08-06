@@ -1,14 +1,19 @@
 package com.essot.web.delegate.concrete;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essot.web.backend.dao.IEssotDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.ProductCategory;
+import com.essot.web.backend.entity.concrete.ProductCategoryXProduct;
 import com.essot.web.controller.data.CategoryDetails;
+import com.essot.web.controller.data.GetProductCategoryResponse;
 import com.essot.web.controller.data.Menu;
 import com.essot.web.controller.data.MenuData;
 import com.essot.web.delegate.EssotDelegate;
@@ -80,6 +85,43 @@ public class ProductCategoryDelegate extends EssotDelegate {
 		}
 			
 		return retData;
+	}
+	/**
+	 * 
+	 */
+	public GetProductCategoryResponse getAllCategoriesList(String key){
+		GetProductCategoryResponse response = new GetProductCategoryResponse();
+		Collection<Object> categoryKey   = new ArrayList<Object>();
+		Collection<Object> categoriesNames = new ArrayList<Object>();
+		String categories = "";
+		int parentCategoryKey = 0;
+		Integer intKey = new Integer(key);
+		
+		do{
+			categoryKey.add(intKey);
+			List<IEssotEntity>  categoryList =  productCategoryDAO.getFilteredListOnPrimarKey(categoryKey);
+			
+			if(categoryList != null && !categoryList.isEmpty()){
+				for(IEssotEntity category : categoryList){
+					if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
+						categoriesNames.add(((ProductCategory)category).getName());
+						parentCategoryKey = ((ProductCategory)category).getParentCategoryKey().intValue();
+						if(parentCategoryKey != 0){
+							categoryKey.remove(intKey);
+							intKey = new Integer(parentCategoryKey);
+						}
+					}
+				}
+			}
+		}while(parentCategoryKey != 0);	
+		//Iterator itr = categoriesNames.iterator();
+		//for(;itr.hasNext();itr.next())
+		String [] arrNames = categoriesNames.toArray(new String[categoriesNames.size()]);
+		for(int i=arrNames.length;i>0;i--){
+			categories += arrNames[i-1]+" | ";
+		}
+		response.setCategories(categories);
+		return response;
 	}
 	
 	public void persistEntity(IEssotEntity entity) {

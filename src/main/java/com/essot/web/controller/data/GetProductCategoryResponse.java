@@ -10,6 +10,8 @@ public class GetProductCategoryResponse {
 	private List<ProductCategoryDetails> products;
 	
 	private List<String> bannerList;
+	
+	private String categories; 
 
 	public List<ProductCategoryDetails> getProducts() {
 		return products;
@@ -25,5 +27,14 @@ public class GetProductCategoryResponse {
 
 	public void setBannerList(List<String> bannerList) {
 		this.bannerList = bannerList;
-	}	
+	}
+
+	public String getCategories() {
+		return categories;
+	}
+
+	public void setCategories(String categories) {
+		this.categories = categories;
+	}
+	
 }
