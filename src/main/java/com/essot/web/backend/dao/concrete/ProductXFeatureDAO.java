@@ -20,8 +20,8 @@ public class ProductXFeatureDAO implements IEssotDAO {
 		return sessionFactory.getCurrentSession().save(entity);
 	}
 
-	public IEssotEntity findEntityById(String id) {
-		return (ProductXFeature) sessionFactory.getCurrentSession().get(ProductXFeature.class, id);
+	public IEssotEntity findEntityById(Object id) {
+		return (ProductXFeature) sessionFactory.getCurrentSession().get(ProductXFeature.class, (Serializable)id);
 	}
 
 	public void updateEntity(IEssotEntity entity) {

@@ -15,7 +15,7 @@ public class ProductXFeatureDelegate extends EssotDelegate {
 		productXFeatureDAO.persistEntity(entity);
 	}
 
-	public IEssotEntity findEntityById(String id) {
+	public IEssotEntity findEntityById(Integer id) {
 		return productXFeatureDAO.findEntityById(id);
 	}
 

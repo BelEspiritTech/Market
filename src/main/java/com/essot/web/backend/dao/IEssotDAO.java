@@ -9,7 +9,7 @@ import com.essot.web.backend.entity.IEssotEntity;
 public interface IEssotDAO {
 
 	Serializable persistEntity(IEssotEntity entity);		           
-	IEssotEntity findEntityById(String id);		           
+	IEssotEntity findEntityById(Object id);		           
 	void updateEntity(IEssotEntity entity);	           
 	void deleteEntity(IEssotEntity entity);	
 	

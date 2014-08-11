@@ -44,7 +44,7 @@ public abstract class EssotDelegate {
 	
 	public abstract void persistEntity(IEssotEntity employee);
 	
-	public abstract IEssotEntity findEntityById(String id);
+	public abstract IEssotEntity findEntityById(Integer id);
     
 	public abstract void updateEntity(IEssotEntity employee);
     

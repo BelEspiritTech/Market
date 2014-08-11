@@ -20,8 +20,8 @@ public class ProductXEnCodeDAO implements IEssotDAO {
 		return sessionFactory.getCurrentSession().save(entity);
 	}
 
-	public IEssotEntity findEntityById(String id) {
-		return (ProductXENCode) sessionFactory.getCurrentSession().get(ProductXENCode.class, id);
+	public IEssotEntity findEntityById(Object id) {
+		return (ProductXENCode) sessionFactory.getCurrentSession().get(ProductXENCode.class, (Serializable)id);
 	}
 
 	public void updateEntity(IEssotEntity entity) {

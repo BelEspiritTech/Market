@@ -3,6 +3,7 @@ package com.essot.web.delegate.concrete;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -91,34 +92,27 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	 */
 	public GetProductCategoryResponse getAllCategoriesList(String key){
 		GetProductCategoryResponse response = new GetProductCategoryResponse();
-		Collection<Object> categoryKey   = new ArrayList<Object>();
-		Collection<Object> categoriesNames = new ArrayList<Object>();
+		List<String> categoriesNames = new LinkedList<String>();
 		String categories = "";
 		int parentCategoryKey = 0;
 		Integer intKey = new Integer(key);
 		
 		do{
-			categoryKey.add(intKey);
-			List<IEssotEntity>  categoryList =  productCategoryDAO.getFilteredListOnPrimarKey(categoryKey);
+			IEssotEntity  category =  productCategoryDAO.findEntityById(intKey);
 			
-			if(categoryList != null && !categoryList.isEmpty()){
-				for(IEssotEntity category : categoryList){
-					if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
-						categoriesNames.add(((ProductCategory)category).getName());
-						parentCategoryKey = ((ProductCategory)category).getParentCategoryKey().intValue();
-						if(parentCategoryKey != 0){
-							categoryKey.remove(intKey);
-							intKey = new Integer(parentCategoryKey);
-						}
+			if(category != null){
+				if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
+					categoriesNames.add(((ProductCategory)category).getName());
+					parentCategoryKey = ((ProductCategory)category).getParentCategoryKey().intValue();
+					if(parentCategoryKey != 0){
+						intKey = new Integer(parentCategoryKey);
+					 }
 					}
 				}
-			}
 		}while(parentCategoryKey != 0);	
-		//Iterator itr = categoriesNames.iterator();
-		//for(;itr.hasNext();itr.next())
-		String [] arrNames = categoriesNames.toArray(new String[categoriesNames.size()]);
-		for(int i=arrNames.length;i>0;i--){
-			categories += arrNames[i-1]+" | ";
+		ListIterator<String> itr = categoriesNames.listIterator(categoriesNames.size());
+		while(itr.hasPrevious()){
+			categories += (String)itr.previous()+" | ";
 		}
 		response.setCategories(categories);
 		return response;
@@ -128,7 +122,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 		productCategoryDAO.persistEntity(entity);
 	}
 
-	public IEssotEntity findEntityById(String id) {
+	public IEssotEntity findEntityById(Integer id) {
 		return productCategoryDAO.findEntityById(id);
 	}
 
@@ -173,5 +167,6 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	public void clearCache(){
 		MenuUtil.clearMenuCache();
 	}
+
 
 }

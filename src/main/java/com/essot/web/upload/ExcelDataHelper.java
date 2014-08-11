@@ -33,7 +33,7 @@ public class ExcelDataHelper {
 		ProductCategory entity = new ProductCategory();
 		
 		entity.setAccessKey(1);
-		entity.setActiveFlag("0");
+		entity.setActiveFlag("Y");
 		entity.setCategoryTitle(categoryName);
 		entity.setCreatedBy(1);
 		entity.setCreationDate(new Date());
