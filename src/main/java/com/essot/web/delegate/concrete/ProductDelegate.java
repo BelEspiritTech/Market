@@ -115,5 +115,13 @@ public class ProductDelegate extends EssotDelegate {
 		}
 		return details;
 	}
-
+	public String getProductName(String sku){
+		String name = "";
+		IEssotEntity  products =  productDAO.findEntityById(sku);
+		if(products != null){
+			Product product = (Product)products;
+			name = product.getName();
+		}
+		return name;
+	}
 }
