@@ -2,7 +2,12 @@ package com.essot.web.upload;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -10,11 +15,20 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.essot.web.backend.dao.DAOFactory;
+import com.essot.web.backend.entity.IEssotEntity;
+import com.essot.web.backend.entity.concrete.Product;
+import com.essot.web.backend.entity.concrete.ProductCategory;
+import com.essot.web.backend.entity.concrete.ProductCategoryXProduct;
+import com.essot.web.controller.data.MenuData;
 import com.essot.web.upload.data.BasicExcelData;
 import com.essot.web.util.MenuUtil;
 import com.essot.web.util.ResourceReader;
 
 public class DataUploadDelegate {
+	
+	@Autowired
+	private DAOFactory daoFactory;
 	
 	private BasicExcelData excelData;
 	
@@ -67,7 +81,8 @@ public class DataUploadDelegate {
 	        	
 	            this.processRow(row);	           
 	        }
-	        
+	        //check valid category.
+	        setValidCategoryCache();
 	    }catch(Exception e){
 	    	System.out.println("Exception caught while reading workbook : "+e.getMessage());
 	    }
@@ -80,7 +95,6 @@ public class DataUploadDelegate {
 		this.processCategory(row);
 		//Process Product Data
 		this.processProductData(row);
-		
 	}
 	
 	/**
@@ -91,9 +105,8 @@ public class DataUploadDelegate {
 	private void processCategory(Row currentRow){
 		Cell categoryCell 	 = currentRow.getCell(0, Row.RETURN_BLANK_AS_NULL);
 		Cell subCategoryCell = currentRow.getCell(1, Row.RETURN_BLANK_AS_NULL);
-		
 		String categoryName 	= categoryCell != null ? categoryCell.getStringCellValue() : null;
-		String subCategoryName  = subCategoryCell != null ? subCategoryCell.getStringCellValue() : null;
+		String subCategoryNames  = subCategoryCell != null ? subCategoryCell.getStringCellValue() : null;
 		BasicExcelData data = this.getExcelData();
 		if(categoryName != null){			
 			if(data.getCategory() == null  || !categoryName.equalsIgnoreCase(data.getCategory())){
@@ -105,15 +118,22 @@ public class DataUploadDelegate {
 			}			
 		}
 		
-		if(subCategoryName != null){
-			if(data.getSubCategory() == null  || !subCategoryName.equalsIgnoreCase(data.getSubCategory())){
-				data.setSubCategory(subCategoryName);
-				if(!MenuUtil.categoryExists(subCategoryName)){
-					//insert new row if category does not exist in DB
-					excelHelper.createCategoryObject(data.getSubCategory(), data.getCategory());
+		if(subCategoryNames != null){
+			String [] subCategoryName = subCategoryNames.split(",");
+			Set<String> subCats = new LinkedHashSet<String>();
+			for(int i=0;i<subCategoryName.length;i++){
+				if(null != subCategoryName[i]){
+					subCats.add(subCategoryName[i]);
+					//data.getSubCategory().add(subCategoryName[i]);
+					if(!MenuUtil.categoryExists(subCategoryName[i])){
+						//insert new row if category does not exist in DB
+						excelHelper.createCategoryObject(subCategoryName[i], data.getCategory());
+					}
 				}
 			}
+			data.setSubCategory((Set<String>)subCats);
 		}
+		
 	}
 	
 	/**
@@ -193,6 +213,85 @@ public class DataUploadDelegate {
 			excelHelper.pushTechSpecs(data);
 			data.getTechSpecs().clear();
 		}
+	}
+	private void setValidCategoryCache(){
+		ProductCategory prodCat = new ProductCategory();
+		
+		List<IEssotEntity> categoryList = daoFactory.getDAOClass(prodCat).readAllData();
+		//Get All The Sub-Categories.
+		List<IEssotEntity> subCatList = getSubCategoryList(categoryList);
+		//Get All the PROD_X_CAT
+		List<IEssotEntity> prodXCat = getProductXCatList(subCatList);
+		//Get All Relevant SKUS
+		Set<Integer> validSubCategory = getValidSubCat(prodXCat);
+		/*for(IEssotEntity category : categoryList){
+			if((validSubCategory.contains(((ProductCategory)category).getProductCategoryKey()))){
+				categoryList.get(((ProductCategory)category).getParentCategoryKey())
+			}
+		}*/
+		MenuUtil.clearMenuCache();		//Clear the Menu Cache before the fresh build.
+		
+		Set<Integer> categoryKeys = new LinkedHashSet<Integer>();
+		for(Integer catKey: validSubCategory){
+			IEssotEntity subCategory = daoFactory.getDAOClass(prodCat).findEntityById(catKey);
+			if(subCategory != null){
+				Integer parentKey = ((ProductCategory)subCategory).getParentCategoryKey();
+				if(!categoryKeys.contains(parentKey)){
+					IEssotEntity category = daoFactory.getDAOClass(prodCat).findEntityById(parentKey);
+					if(category != null){
+						MenuData catData = new MenuData();
+						catData.setCategoryID(((ProductCategory)category).getProductCategoryKey());
+						catData.setCategoryName(((ProductCategory)category).getName());
+						catData.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
+						catData.setPriority(((ProductCategory)category).getPriority());
+						MenuUtil.addCategoryToCache(catData);
+					}
+				}
+				categoryKeys.add(parentKey);
+				MenuData subCatData = new MenuData();
+				subCatData.setCategoryID(((ProductCategory)subCategory).getProductCategoryKey());
+				subCatData.setCategoryName(((ProductCategory)subCategory).getName());
+				subCatData.setParentCategoryID(((ProductCategory)subCategory).getParentCategoryKey());
+				subCatData.setPriority(((ProductCategory)subCategory).getPriority());
+				MenuUtil.addCategoryToCache(subCatData);
+			}
+		}
+		
+	}
+	
+	private List<IEssotEntity> getSubCategoryList(List<IEssotEntity> categoryList){
+		List<IEssotEntity> subCatL = new ArrayList<IEssotEntity>();
+		if(categoryList != null && !categoryList.isEmpty()){
+			for(IEssotEntity category : categoryList){
+				if(((ProductCategory)category).getParentCategoryKey().intValue() != 0)
+					subCatL.add(category);
+			}
+		}
+		return subCatL;
+	}
+	
+	private List<IEssotEntity> getProductXCatList(List<IEssotEntity> list){
+		ProductCategoryXProduct prodXCat = new ProductCategoryXProduct();
+		List<IEssotEntity> prodXCatList = new ArrayList<IEssotEntity>();
+		for(IEssotEntity subcat : list){
+			Collection<Object> catKey = new ArrayList<Object>();
+			catKey.add(((ProductCategory)subcat).getProductCategoryKey());
+			List<IEssotEntity> prodXCats = daoFactory.getDAOClass(prodXCat).getFilteredListOnPrimarKey(catKey);
+			if(prodXCats != null && !prodXCats.isEmpty())
+				prodXCatList.addAll(prodXCats);
+		}
+		return prodXCatList;
+	}
+	private Set<Integer> getValidSubCat(List<IEssotEntity> prodXCategoryList){
+		Product product = new Product();
+		Set<Integer> vSubCatKeyList = new LinkedHashSet<Integer>();
+		for(IEssotEntity productXCat : prodXCategoryList){
+			IEssotEntity prod = daoFactory.getDAOClass(product).
+					findEntityById(((ProductCategoryXProduct)productXCat).getSkuName());
+			if(prod != null && ((Product)prod).getActiveFlag().equalsIgnoreCase("Y"))
+				vSubCatKeyList.add(((ProductCategoryXProduct)productXCat).getProductCategoryKey());
+		}
+		return vSubCatKeyList;
 	}
 	
 }

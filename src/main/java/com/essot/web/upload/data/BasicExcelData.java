@@ -2,12 +2,13 @@ package com.essot.web.upload.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class BasicExcelData {
 	
 	private String category;
 	
-	private String subCategory;
+	private Set<String> subCategory;
 	
 	private String skuName;
 	
@@ -44,14 +45,14 @@ public class BasicExcelData {
 	/**
 	 * @return the subCategory
 	 */
-	public String getSubCategory() {
+	public Set<String> getSubCategory() {
 		return subCategory;
 	}
 
 	/**
 	 * @param subCategory the subCategory to set
 	 */
-	public void setSubCategory(String subCategory) {
+	public void setSubCategory(Set<String> subCategory) {
 		this.subCategory = subCategory;
 	}
 

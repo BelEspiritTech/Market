@@ -7,13 +7,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essot.web.backend.dao.IEssotDAO;
+import com.essot.web.backend.entity.IEssotEntity;
+import com.essot.web.backend.entity.concrete.ProductCategory;
 import com.essot.web.controller.data.MenuData;
 
 
 public class MenuUtil {
 
 	@Autowired
-	IEssotDAO productCategoryDAO;
+	static IEssotDAO productCategoryDAO;
 	
 	private static MenuUtil utility;
 	
@@ -104,11 +106,21 @@ public class MenuUtil {
 		boolean isExists = false;
 		List<MenuData> menuData = MenuUtil.getCategories() ;
 		
-		for(MenuData menu : menuData){
+		/*for(MenuData menu : menuData){
 			if(menu != null && menu.getCategoryName().equalsIgnoreCase(categoryName)){
 				isExists = true;
 				break;
 			}
+		}*/
+		try{
+			IEssotEntity productCategory = productCategoryDAO.findEntityById(categoryName);
+			if(productCategory != null){
+				if(((ProductCategory)productCategory).getName().equalsIgnoreCase(categoryName)){
+					isExists = true;
+				}
+			}
+		}catch(Exception e){
+			return isExists;
 		}
 		
 		return isExists;

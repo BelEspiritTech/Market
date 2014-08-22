@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -84,38 +87,43 @@ public class ExcelDataHelper {
 		
 		ProductCategoryXProduct blank = new ProductCategoryXProduct();
 		blank.setSkuName(data.getSkuName());
-		
 		Collection<Object> categoryList = new ArrayList<Object>();
-		categoryList.add(MenuUtil.getMenu(data.getSubCategory()).getCategoryID());
-		
-		List<IEssotEntity> productList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(categoryList);
-		boolean isExist = false;
-		
-		if(productList != null && !productList.isEmpty()){
-			for(IEssotEntity product : productList ) {
-				if(blank.getSkuName().equalsIgnoreCase(((ProductCategoryXProduct)product).getSkuName())){
-					isExist = true;
-					break;
-				}				
+		Set<String> set = data.getSubCategory();
+		Iterator<String> itr = set.iterator();
+		while(itr.hasNext()){
+			String subCategory = (String)itr.next();
+			Integer catKey = MenuUtil.getMenu(subCategory).getCategoryID();
+			categoryList.add(catKey);
+			List<IEssotEntity> productList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(categoryList);
+			boolean isExist = false;
+			
+			if(productList != null && !productList.isEmpty()){
+				for(IEssotEntity product : productList ) {
+					if(blank.getSkuName().equalsIgnoreCase(((ProductCategoryXProduct)product).getSkuName()) &&
+							(blank.getProductCategoryKey() != null && blank.getProductCategoryKey().intValue() == catKey)){
+						isExist = true;
+						break;
+					}				
+				}
 			}
-		}
-		
-		if(!isExist){
-			ProductCategoryXProduct entity = new ProductCategoryXProduct();
 			
-			entity.setActiveFlag("Y");
-			entity.setCreatedBy(0);
-			entity.setCreationDate(new Date());
-			entity.setEndDate(new Date());
-			entity.setProductCategoryKey(MenuUtil.getMenu(data.getSubCategory()).getCategoryID());
-			entity.setSequenceId(0);
-			entity.setSkuName(data.getSkuName());
-			entity.setStartDate(new Date());
-			entity.setStatus(0);
-			entity.setUpdateDate(new Date());
-			entity.setUpdatedBy(0);
-			
-			this.persistEntity(entity);
+			if(!isExist){
+				ProductCategoryXProduct entity = new ProductCategoryXProduct();
+				
+				entity.setActiveFlag("Y");
+				entity.setCreatedBy(0);
+				entity.setCreationDate(new Date());
+				entity.setEndDate(new Date());
+				entity.setProductCategoryKey(catKey);
+				entity.setSequenceId(0);
+				entity.setSkuName(data.getSkuName());
+				entity.setStartDate(new Date());
+				entity.setStatus(0);
+				entity.setUpdateDate(new Date());
+				entity.setUpdatedBy(0);
+				
+				this.persistEntity(entity);
+			}
 		}
 		
 	}
@@ -201,7 +209,7 @@ public class ExcelDataHelper {
 			blank.setActiveFlag(data.getActiveFlag());
 			blank.setName(data.getProductName());
 			
-			this.updateEntity(blank);
+			this.persistEntity(blank);
 			
 		}
 		
