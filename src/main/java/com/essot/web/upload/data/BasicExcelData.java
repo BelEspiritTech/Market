@@ -11,7 +11,7 @@ public class BasicExcelData {
 	private Set<String> subCategory;
 	
 	private String skuName;
-	
+
 	private String productName;
 	
 	private String shortDesc;
@@ -27,6 +27,8 @@ public class BasicExcelData {
 	private List<String> features = new ArrayList<String>();
 	
 	private List<String> techSpecs = new ArrayList<String>();
+	
+	private List<String> relSKUs = new ArrayList<String>();
 
 	/**
 	 * @return the category
@@ -199,6 +201,17 @@ public class BasicExcelData {
 	public void setActiveFlag(String activeFlag) {
 		this.activeFlag = activeFlag;
 	}
+
+	public List<String> getRelSKU() {
+		return relSKUs;
+	}
+
+	public void setRelSKU(List<String> relSKUs) {
+		this.relSKUs = relSKUs;
+	}
 	
+	public void addRelatedSKUs(String relsku){
+		this.relSKUs.add(relsku);
+	}
 
 }

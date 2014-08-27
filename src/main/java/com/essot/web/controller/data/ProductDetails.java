@@ -3,6 +3,8 @@ package com.essot.web.controller.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.essot.web.backend.entity.concrete.RelatedSKUs;
+
 public class ProductDetails {
 	private ProductCategoryDetails productDetails;
 	
@@ -12,6 +14,16 @@ public class ProductDetails {
 	
 	private List<ProductEnCodes> enCodes;
 	
+	private List<RelatedSKUs> relatedskus;
+	
+	public List<RelatedSKUs> getRelatedskus() {
+		return relatedskus;
+	}
+
+	public void setRelatedskus(List<RelatedSKUs> relatedskus) {
+		this.relatedskus = relatedskus;
+	}
+
 	private String defaultEnCode = "default";
 
 	public ProductCategoryDetails getProductDetails() {
@@ -74,6 +86,14 @@ public class ProductDetails {
 		}
 		
 		this.enCodes.add(enCode);
+
+	}
+	public void addRelatedSKUs(RelatedSKUs relskus){
+		if(this.relatedskus == null){
+			this.relatedskus = new ArrayList<RelatedSKUs>();
+		}
+		
+		this.relatedskus.add(relskus);
 
 	}
 

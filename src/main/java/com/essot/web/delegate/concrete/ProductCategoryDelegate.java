@@ -140,24 +140,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	 */
 	public synchronized List<MenuData> getMenuFromDB(){
 		
-		List<MenuData> data = new ArrayList<MenuData>();
-		if((MenuUtil.getCategories() == null || MenuUtil.getCategories().isEmpty())){
-			List<IEssotEntity> dbData = productCategoryDAO.readAllData();
-			for(IEssotEntity category :dbData){
-				if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
-					MenuData item = new MenuData();
-					
-					item.setCategoryID(((ProductCategory)category).getProductCategoryKey());
-					item.setCategoryName(((ProductCategory)category).getCategoryTitle());
-					item.setPriority(((ProductCategory)category).getPriority());
-					item.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
-					
-					data.add(item);
-					MenuUtil.addCategoryToCache(item);
-				}
-			}
-		}
-		
+		List<MenuData> data = MenuUtil.setValidCategoryCache();
 		return data;
 	}
 	

@@ -30,6 +30,7 @@
 	<bean id="productFeatureDAO" class="com.essot.web.backend.dao.concrete.ProductXFeatureDAO" />
 	<bean id="productTechSpecDAO" class="com.essot.web.backend.dao.concrete.ProductXTechSpecDAO" />
 	<bean id="productEnCodeDAO" class="com.essot.web.backend.dao.concrete.ProductXEnCodeDAO" />
+	<bean id="relatedSKUDAO" class="com.essot.web.backend.dao.concrete.RelatedSKUDAO" />
 
 	<bean id="resourceReader" class="com.essot.web.util.ResourceReader" />
 
@@ -62,6 +63,7 @@
         		<value>com.essot.web.backend.entity.concrete.ProductXFeature</value>
         		<value>com.essot.web.backend.entity.concrete.ProductXTechSpec</value>
         		<value>com.essot.web.backend.entity.concrete.ProductXENCode</value>
+        		<value>com.essot.web.backend.entity.concrete.RelatedSKUs</value>
             </list>  
         </property>  
         <property name="hibernateProperties">  

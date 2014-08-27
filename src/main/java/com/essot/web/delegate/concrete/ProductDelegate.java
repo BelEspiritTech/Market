@@ -8,11 +8,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essot.web.backend.dao.IEssotDAO;
+import com.essot.web.backend.dao.concrete.RelatedSKUDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.Product;
 import com.essot.web.backend.entity.concrete.ProductXENCode;
 import com.essot.web.backend.entity.concrete.ProductXFeature;
 import com.essot.web.backend.entity.concrete.ProductXTechSpec;
+import com.essot.web.backend.entity.concrete.RelatedSKUs;
 import com.essot.web.controller.data.ProductCategoryDetails;
 import com.essot.web.controller.data.ProductDetails;
 import com.essot.web.controller.data.ProductEnCodes;
@@ -30,6 +32,9 @@ public class ProductDelegate extends EssotDelegate {
 	
 	@Autowired
 	IEssotDAO productTechSpecDAO;
+	
+	@Autowired
+	IEssotDAO relatedSKUDAO;
 	
 	@Autowired
 	IEssotDAO productEnCodeDAO;
@@ -112,6 +117,17 @@ public class ProductDelegate extends EssotDelegate {
 				
 				details.setProductDetails(productDetails);
 			}
+			
+			List<IEssotEntity> releatedSKUs = relatedSKUDAO.getFilteredListOnPrimarKey(productSKUNames);
+			
+			if(releatedSKUs != null & !releatedSKUs.isEmpty()){
+				for(IEssotEntity relSKU : releatedSKUs){
+					RelatedSKUs relatedSKU = new RelatedSKUs();
+					relatedSKU.setRelatedsku(((RelatedSKUs)relSKU).getRelatedsku());
+					details.addRelatedSKUs(relatedSKU);
+				}
+			}
+					
 		}
 		return details;
 	}

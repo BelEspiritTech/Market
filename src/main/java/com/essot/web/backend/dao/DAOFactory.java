@@ -2,6 +2,7 @@ package com.essot.web.backend.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.essot.web.backend.dao.concrete.RelatedSKUDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.Product;
 import com.essot.web.backend.entity.concrete.ProductCategory;
@@ -30,6 +31,9 @@ public class DAOFactory {
 	@Autowired
 	private IEssotDAO productTechSpecDAO;
 	
+	@Autowired
+	private IEssotDAO relatedSKUDAO;
+	
 	public IEssotDAO getDAOClass(IEssotEntity entity){
 		if(entity instanceof Product){
 			return productDAO;
@@ -43,6 +47,8 @@ public class DAOFactory {
 			return productFeatureDAO;
 		}else if (entity instanceof ProductXTechSpec){
 			return productTechSpecDAO;
+		}else if (entity instanceof RelatedSKUDAO){
+			return relatedSKUDAO;	
 		}else {
 		
 			return null;

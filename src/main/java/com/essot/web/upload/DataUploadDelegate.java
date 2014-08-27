@@ -3,6 +3,7 @@ package com.essot.web.upload;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -67,19 +68,35 @@ public class DataUploadDelegate {
 	
 	        //Get first/desired sheet from the workbook
 	        XSSFSheet sheet = workbook.getSheetAt(0);
-	
-	        //Iterate through each rows one by one
-	        Iterator<Row> rowIterator = sheet.iterator();
-	        	        
-	        while (rowIterator.hasNext()) {
-	        	Row row = rowIterator.next();
+	        
+	        Iterator<Row> catIterator = sheet.iterator();
+	        
+	        while (catIterator.hasNext()) {
+	        	Row row = catIterator.next();
 	        	
 	        	if(row.getRowNum() == 0){
 	        		excelData = new BasicExcelData();
 	        		continue;
 	        	}
 	        	
-	            this.processRow(row);	           
+	            this.processCatRow(row);	           
+	        }
+	        
+	        //Iterate through each rows one by one
+	        Iterator<Row> prodxcatIterator = sheet.iterator();
+	        try{	        
+		        while (prodxcatIterator.hasNext()) {
+		        	Row row = prodxcatIterator.next();
+		        	
+		        	if(row.getRowNum() == 0){
+		        		excelData = new BasicExcelData();
+		        		continue;
+		        	}
+		        	
+		            this.processRow(row);	           
+		        }
+	        }finally{
+	        	this.pushAdditionalData();
 	        }
 	        //check valid category.
 	        setValidCategoryCache();
@@ -87,13 +104,12 @@ public class DataUploadDelegate {
 	    	System.out.println("Exception caught while reading workbook : "+e.getMessage());
 	    }
 	}
-	
-	
-	private void processRow(Row row){
-		
+	private void processCatRow(Row row){
 		//Process Category Data 
 		this.processCategory(row);
-		//Process Product Data
+	}
+	
+	private void processRow(Row row){
 		this.processProductData(row);
 	}
 	
@@ -107,6 +123,8 @@ public class DataUploadDelegate {
 		Cell subCategoryCell = currentRow.getCell(1, Row.RETURN_BLANK_AS_NULL);
 		String categoryName 	= categoryCell != null ? categoryCell.getStringCellValue() : null;
 		String subCategoryNames  = subCategoryCell != null ? subCategoryCell.getStringCellValue() : null;
+		if(categoryName == null && subCategoryNames==null)
+			return;
 		BasicExcelData data = this.getExcelData();
 		if(categoryName != null){			
 			if(data.getCategory() == null  || !categoryName.equalsIgnoreCase(data.getCategory())){
@@ -119,21 +137,18 @@ public class DataUploadDelegate {
 		}
 		
 		if(subCategoryNames != null){
-			String [] subCategoryName = subCategoryNames.split(",");
-			Set<String> subCats = new LinkedHashSet<String>();
+			String [] subCategoryName = subCategoryNames.split("/");
+			String parentCategory = data.getCategory();
 			for(int i=0;i<subCategoryName.length;i++){
 				if(null != subCategoryName[i]){
-					subCats.add(subCategoryName[i]);
-					//data.getSubCategory().add(subCategoryName[i]);
 					if(!MenuUtil.categoryExists(subCategoryName[i])){
 						//insert new row if category does not exist in DB
-						excelHelper.createCategoryObject(subCategoryName[i], data.getCategory());
+						excelHelper.createCategoryObject(subCategoryName[i], parentCategory);
+						parentCategory = subCategoryName[i];
 					}
 				}
 			}
-			data.setSubCategory((Set<String>)subCats);
 		}
-		
 	}
 	
 	/**
@@ -142,13 +157,15 @@ public class DataUploadDelegate {
 	 * @param subCategoryCell
 	 */
 	private void processProductData(Row currentRow){
-		Cell skuCell 	 	 = currentRow.getCell(2, Row.RETURN_BLANK_AS_NULL);
-		Cell productNameCell = currentRow.getCell(3, Row.RETURN_BLANK_AS_NULL);
-		Cell shortDescCell 	 = currentRow.getCell(4, Row.RETURN_BLANK_AS_NULL);
-		Cell longDescCell 	 = currentRow.getCell(5, Row.RETURN_BLANK_AS_NULL);
-		Cell priceCell 		 = currentRow.getCell(6, Row.RETURN_BLANK_AS_NULL);
-		Cell activeFlagCell  =currentRow.getCell(7, Row.RETURN_BLANK_AS_NULL);
+		Cell catxprodCell	 = currentRow.getCell(2,Row.RETURN_BLANK_AS_NULL);
+		Cell skuCell 	 	 = currentRow.getCell(3, Row.RETURN_BLANK_AS_NULL);
+		Cell productNameCell = currentRow.getCell(4, Row.RETURN_BLANK_AS_NULL);
+		Cell shortDescCell 	 = currentRow.getCell(5, Row.RETURN_BLANK_AS_NULL);
+		Cell longDescCell 	 = currentRow.getCell(6, Row.RETURN_BLANK_AS_NULL);
+		Cell priceCell 		 = currentRow.getCell(7, Row.RETURN_BLANK_AS_NULL);
+		Cell activeFlagCell  =currentRow.getCell(8, Row.RETURN_BLANK_AS_NULL);
 		
+		String catxprod		= catxprodCell != null ? catxprodCell.getStringCellValue() : null;
 		String skuID  		= skuCell != null ? skuCell.getStringCellValue() : null;
 		String productName  = productNameCell != null ? productNameCell.getStringCellValue() : null;
 		String shortDesc  	= shortDescCell != null ? shortDescCell.getStringCellValue() : null;
@@ -157,6 +174,11 @@ public class DataUploadDelegate {
 		String activeFlag   = activeFlagCell != null ? activeFlagCell.getStringCellValue():null;
 		
 		BasicExcelData data = this.getExcelData();
+		
+		if(catxprodCell != null){
+			Set<String> subCatSet = new LinkedHashSet<String>(Arrays.asList(catxprod.split(",")));
+			data.setSubCategory(subCatSet);
+		}
 		
 		if(skuID != null){
 						
@@ -174,14 +196,15 @@ public class DataUploadDelegate {
 				excelHelper.updateProductInfo(data);
 			}			
 		}
+		Cell relSKUCell	  = currentRow.getCell(9, Row.RETURN_BLANK_AS_NULL);
+		Cell enCodeCell   = currentRow.getCell(10, Row.RETURN_BLANK_AS_NULL);
+		Cell featureCell  = currentRow.getCell(11, Row.RETURN_BLANK_AS_NULL);
+		Cell techSpecCell = currentRow.getCell(12, Row.RETURN_BLANK_AS_NULL);
 		
-		Cell enCodeCell   = currentRow.getCell(8, Row.RETURN_BLANK_AS_NULL);
-		Cell featureCell  = currentRow.getCell(9, Row.RETURN_BLANK_AS_NULL);
-		Cell techSpecCell = currentRow.getCell(10, Row.RETURN_BLANK_AS_NULL);
-		
-		String enCode   = enCodeCell != null ? enCodeCell.getStringCellValue() : null;
-		String feature  = featureCell != null ? featureCell.getStringCellValue() : null;
-		String techSpec = techSpecCell != null ? techSpecCell.getStringCellValue() : null;
+		String enCode   	= enCodeCell != null ? enCodeCell.getStringCellValue() : null;
+		String feature  	= featureCell != null ? featureCell.getStringCellValue() : null;
+		String techSpec		= techSpecCell != null ? techSpecCell.getStringCellValue() : null;
+		String relSKU 		= relSKUCell != null ? relSKUCell.getStringCellValue() : null;
 		
 		if(enCode != null){
 			data.addEnCode(enCode);
@@ -193,7 +216,10 @@ public class DataUploadDelegate {
 		
 		if(techSpec != null){
 			data.addTechSpec(techSpec);
-		}		
+		}
+		if(relSKU != null){
+			data.addRelatedSKUs(relSKU);
+		}
 	}
 	
 	private void pushAdditionalData(){
@@ -213,85 +239,12 @@ public class DataUploadDelegate {
 			excelHelper.pushTechSpecs(data);
 			data.getTechSpecs().clear();
 		}
+		if(data.getRelSKU() != null && !data.getRelSKU().isEmpty()){
+			excelHelper.pushRelSKUs(data);
+			data.getRelSKU().clear();
+		}
 	}
 	private void setValidCategoryCache(){
-		ProductCategory prodCat = new ProductCategory();
-		
-		List<IEssotEntity> categoryList = daoFactory.getDAOClass(prodCat).readAllData();
-		//Get All The Sub-Categories.
-		List<IEssotEntity> subCatList = getSubCategoryList(categoryList);
-		//Get All the PROD_X_CAT
-		List<IEssotEntity> prodXCat = getProductXCatList(subCatList);
-		//Get All Relevant SKUS
-		Set<Integer> validSubCategory = getValidSubCat(prodXCat);
-		/*for(IEssotEntity category : categoryList){
-			if((validSubCategory.contains(((ProductCategory)category).getProductCategoryKey()))){
-				categoryList.get(((ProductCategory)category).getParentCategoryKey())
-			}
-		}*/
-		MenuUtil.clearMenuCache();		//Clear the Menu Cache before the fresh build.
-		
-		Set<Integer> categoryKeys = new LinkedHashSet<Integer>();
-		for(Integer catKey: validSubCategory){
-			IEssotEntity subCategory = daoFactory.getDAOClass(prodCat).findEntityById(catKey);
-			if(subCategory != null){
-				Integer parentKey = ((ProductCategory)subCategory).getParentCategoryKey();
-				if(!categoryKeys.contains(parentKey)){
-					IEssotEntity category = daoFactory.getDAOClass(prodCat).findEntityById(parentKey);
-					if(category != null){
-						MenuData catData = new MenuData();
-						catData.setCategoryID(((ProductCategory)category).getProductCategoryKey());
-						catData.setCategoryName(((ProductCategory)category).getName());
-						catData.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
-						catData.setPriority(((ProductCategory)category).getPriority());
-						MenuUtil.addCategoryToCache(catData);
-					}
-				}
-				categoryKeys.add(parentKey);
-				MenuData subCatData = new MenuData();
-				subCatData.setCategoryID(((ProductCategory)subCategory).getProductCategoryKey());
-				subCatData.setCategoryName(((ProductCategory)subCategory).getName());
-				subCatData.setParentCategoryID(((ProductCategory)subCategory).getParentCategoryKey());
-				subCatData.setPriority(((ProductCategory)subCategory).getPriority());
-				MenuUtil.addCategoryToCache(subCatData);
-			}
-		}
-		
+		MenuUtil.setValidCategoryCache();
 	}
-	
-	private List<IEssotEntity> getSubCategoryList(List<IEssotEntity> categoryList){
-		List<IEssotEntity> subCatL = new ArrayList<IEssotEntity>();
-		if(categoryList != null && !categoryList.isEmpty()){
-			for(IEssotEntity category : categoryList){
-				if(((ProductCategory)category).getParentCategoryKey().intValue() != 0)
-					subCatL.add(category);
-			}
-		}
-		return subCatL;
-	}
-	
-	private List<IEssotEntity> getProductXCatList(List<IEssotEntity> list){
-		ProductCategoryXProduct prodXCat = new ProductCategoryXProduct();
-		List<IEssotEntity> prodXCatList = new ArrayList<IEssotEntity>();
-		for(IEssotEntity subcat : list){
-			Collection<Object> catKey = new ArrayList<Object>();
-			catKey.add(((ProductCategory)subcat).getProductCategoryKey());
-			List<IEssotEntity> prodXCats = daoFactory.getDAOClass(prodXCat).getFilteredListOnPrimarKey(catKey);
-			if(prodXCats != null && !prodXCats.isEmpty())
-				prodXCatList.addAll(prodXCats);
-		}
-		return prodXCatList;
-	}
-	private Set<Integer> getValidSubCat(List<IEssotEntity> prodXCategoryList){
-		Product product = new Product();
-		Set<Integer> vSubCatKeyList = new LinkedHashSet<Integer>();
-		for(IEssotEntity productXCat : prodXCategoryList){
-			IEssotEntity prod = daoFactory.getDAOClass(product).
-					findEntityById(((ProductCategoryXProduct)productXCat).getSkuName());
-			if(prod != null && ((Product)prod).getActiveFlag().equalsIgnoreCase("Y"))
-				vSubCatKeyList.add(((ProductCategoryXProduct)productXCat).getProductCategoryKey());
-		}
-		return vSubCatKeyList;
-	}
-	
 }
