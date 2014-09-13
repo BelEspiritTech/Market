@@ -87,7 +87,6 @@ public class ExcelDataHelper {
 	private void updateProductCategory(BasicExcelData data){
 		
 		ProductCategoryXProduct blank = new ProductCategoryXProduct();
-		System.out.println();
 		blank.setSkuName(data.getSkuName());
 		Collection<Object> categoryList = new ArrayList<Object>();
 		Set<String> set = data.getSubCategory();
@@ -199,6 +198,7 @@ public class ExcelDataHelper {
 			entity.setStatusCode(0);
 			entity.setUnitOfMeasure("");
 			entity.setUnitOfMeasureCode(0);
+			entity.setPriority(data.getPriority());
 			entity.setValidFlag(0);
 			
 			this.persistEntity(entity);

@@ -14,13 +14,13 @@ public class ProductDetails {
 	
 	private List<ProductEnCodes> enCodes;
 	
-	private List<RelatedSKUs> relatedskus;
+	private List<RelatedProductDetails> relatedskus;
 	
-	public List<RelatedSKUs> getRelatedskus() {
+	public List<RelatedProductDetails> getRelatedskus() {
 		return relatedskus;
 	}
 
-	public void setRelatedskus(List<RelatedSKUs> relatedskus) {
+	public void setRelatedskus(List<RelatedProductDetails> relatedskus) {
 		this.relatedskus = relatedskus;
 	}
 
@@ -88,9 +88,9 @@ public class ProductDetails {
 		this.enCodes.add(enCode);
 
 	}
-	public void addRelatedSKUs(RelatedSKUs relskus){
+	public void addRelatedSKUs(RelatedProductDetails relskus){
 		if(this.relatedskus == null){
-			this.relatedskus = new ArrayList<RelatedSKUs>();
+			this.relatedskus = new ArrayList<RelatedProductDetails>();
 		}
 		
 		this.relatedskus.add(relskus);

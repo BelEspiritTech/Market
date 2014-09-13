@@ -20,6 +20,7 @@ import com.essot.web.controller.data.ProductDetails;
 import com.essot.web.controller.data.ProductEnCodes;
 import com.essot.web.controller.data.ProductFeatures;
 import com.essot.web.controller.data.ProductTechSpecs;
+import com.essot.web.controller.data.RelatedProductDetails;
 import com.essot.web.delegate.EssotDelegate;
 
 public class ProductDelegate extends EssotDelegate {
@@ -121,11 +122,11 @@ public class ProductDelegate extends EssotDelegate {
 			List<IEssotEntity> releatedSKUs = relatedSKUDAO.getFilteredListOnPrimarKey(productSKUNames);
 			
 			if(releatedSKUs != null & !releatedSKUs.isEmpty()){
+				Collection<Object> relSKUs = new ArrayList<Object>();
 				for(IEssotEntity relSKU : releatedSKUs){
-					RelatedSKUs relatedSKU = new RelatedSKUs();
-					relatedSKU.setRelatedsku(((RelatedSKUs)relSKU).getRelatedsku());
-					details.addRelatedSKUs(relatedSKU);
+					relSKUs.add(((RelatedSKUs)relSKU).getRelatedsku());
 				}
+				details.setRelatedskus(getRelatedProdDetails(relSKUs));
 			}
 					
 		}
@@ -139,5 +140,20 @@ public class ProductDelegate extends EssotDelegate {
 			name = product.getName();
 		}
 		return name;
+	}
+	public List<RelatedProductDetails> getRelatedProdDetails(Collection<Object> relSKUs){
+		List<IEssotEntity>  products =  productDAO.getFilteredListOnPrimarKey(relSKUs);
+		List<RelatedProductDetails> relProdList = new ArrayList<RelatedProductDetails>();
+		if(products != null && !products.isEmpty()){
+			for(IEssotEntity prod : products){
+				RelatedProductDetails relProdDetails = new RelatedProductDetails();
+				relProdDetails.setRelSKU(((Product)prod).getSkuName());
+				relProdDetails.setRelProdName(((Product)prod).getName());
+				relProdDetails.setRelProdShortDesc(((Product)prod).getDescription());
+				relProdDetails.setRelProdPrice(((Product)prod).getB2cNowPrice());
+				relProdList.add(relProdDetails);
+			}
+		}
+		return relProdList;
 	}
 }

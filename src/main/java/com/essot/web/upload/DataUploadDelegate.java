@@ -159,14 +159,16 @@ public class DataUploadDelegate {
 	private void processProductData(Row currentRow){
 		Cell catxprodCell	 = currentRow.getCell(2,Row.RETURN_BLANK_AS_NULL);
 		Cell skuCell 	 	 = currentRow.getCell(3, Row.RETURN_BLANK_AS_NULL);
-		Cell productNameCell = currentRow.getCell(4, Row.RETURN_BLANK_AS_NULL);
-		Cell shortDescCell 	 = currentRow.getCell(5, Row.RETURN_BLANK_AS_NULL);
-		Cell longDescCell 	 = currentRow.getCell(6, Row.RETURN_BLANK_AS_NULL);
-		Cell priceCell 		 = currentRow.getCell(7, Row.RETURN_BLANK_AS_NULL);
-		Cell activeFlagCell  =currentRow.getCell(8, Row.RETURN_BLANK_AS_NULL);
+		Cell skuPrCell		 = currentRow.getCell(4, Row.RETURN_BLANK_AS_NULL);
+		Cell productNameCell = currentRow.getCell(5, Row.RETURN_BLANK_AS_NULL);
+		Cell shortDescCell 	 = currentRow.getCell(6, Row.RETURN_BLANK_AS_NULL);
+		Cell longDescCell 	 = currentRow.getCell(7, Row.RETURN_BLANK_AS_NULL);
+		Cell priceCell 		 = currentRow.getCell(8, Row.RETURN_BLANK_AS_NULL);
+		Cell activeFlagCell  = currentRow.getCell(9, Row.RETURN_BLANK_AS_NULL);
 		
 		String catxprod		= catxprodCell != null ? catxprodCell.getStringCellValue() : null;
 		String skuID  		= skuCell != null ? skuCell.getStringCellValue() : null;
+		Double skuPriority  = skuPrCell != null ? skuPrCell.getNumericCellValue() : null;
 		String productName  = productNameCell != null ? productNameCell.getStringCellValue() : null;
 		String shortDesc  	= shortDescCell != null ? shortDescCell.getStringCellValue() : null;
 		String longDesc  	= longDescCell != null ? longDescCell.getStringCellValue() : null;
@@ -191,6 +193,7 @@ public class DataUploadDelegate {
 				data.setShortDesc(shortDesc);
 				data.setLongDesc(longDesc);
 				data.setPrice(new Integer(price.intValue()));
+				data.setPriority(skuPriority.intValue());
 				data.setActiveFlag(activeFlag);
 				//save product
 				excelHelper.updateProductInfo(data);

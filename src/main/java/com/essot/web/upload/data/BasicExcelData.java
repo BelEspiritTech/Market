@@ -20,6 +20,8 @@ public class BasicExcelData {
 	
 	private Integer price;
 	
+	private Integer priority;
+	
 	private String activeFlag;
 	
 	private List<String> encodes = new ArrayList<String>();
@@ -213,5 +215,13 @@ public class BasicExcelData {
 	public void addRelatedSKUs(String relsku){
 		this.relSKUs.add(relsku);
 	}
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
+
 
 }
