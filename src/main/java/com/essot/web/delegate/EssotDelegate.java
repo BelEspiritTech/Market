@@ -42,11 +42,11 @@ public abstract class EssotDelegate {
 		return retValue;
 	}
 	
-	public abstract void persistEntity(IEssotEntity employee);
+	public abstract void persistEntity(IEssotEntity entity);
 	
 	public abstract IEssotEntity findEntityById(Integer id);
     
-	public abstract void updateEntity(IEssotEntity employee);
+	public abstract void updateEntity(IEssotEntity entity);
     
-	public abstract void deleteEntity(IEssotEntity employee);
+	public abstract void deleteEntity(IEssotEntity entity);
 }

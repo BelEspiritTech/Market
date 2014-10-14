@@ -41,4 +41,8 @@ public class ProductCategoryXProductDAO implements IEssotDAO {
 		String sql = "FROM  ProductCategoryXProduct p WHERE p.productCategoryKey  in (:keyList)";
 		return sessionFactory.getCurrentSession().createQuery(sql).setParameterList("keyList", keys).list();
 	}
+
+	public List<IEssotEntity> searchOnIndexes(Collection<Object> filter) {
+		return null;
+	}
 }

@@ -4,12 +4,12 @@ import com.essot.web.backend.entity.IEssotEntity;
 
 public interface IEssotDelegate {
 
-	void persistEntity(IEssotEntity employee);
+	void persistEntity(IEssotEntity entity);
 	
 	IEssotEntity findEntityById(String id);
     
-	void updateEntity(IEssotEntity employee);
+	void updateEntity(IEssotEntity entity);
     
-	void deleteEntity(IEssotEntity employee);
+	void deleteEntity(IEssotEntity entity);
 	
 }

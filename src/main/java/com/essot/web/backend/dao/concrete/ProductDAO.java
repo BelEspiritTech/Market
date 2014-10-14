@@ -40,5 +40,12 @@ public class ProductDAO implements IEssotDAO {
 	public List<IEssotEntity> getFilteredListOnPrimarKey(Collection<Object> keys) {
 		String sql = "FROM  Product p WHERE p.skuName  in (:keyList) ORDER BY p.priority";
 		return sessionFactory.getCurrentSession().createQuery(sql).setParameterList("keyList", keys).list();
-	}	
+	}
+
+	public List<IEssotEntity> searchOnIndexes(Collection<Object> filter) {
+		String sql = "FROM  Product p WHERE p.skuName  like (:searchKey) OR p.name like (:searchKey) OR p.description like (:searchKey)";
+		return sessionFactory.getCurrentSession().createQuery(sql).setParameter("searchKey", "%"+filter.toArray()[0] +"%").list();
+	}
+	
+	
 }

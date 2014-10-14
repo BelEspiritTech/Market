@@ -42,4 +42,8 @@ public class ProductXTechSpecDAO implements IEssotDAO {
 		return sessionFactory.getCurrentSession().createQuery(sql).setParameterList("keyList", keys).list();
 	}
 
+	public List<IEssotEntity> searchOnIndexes(Collection<Object> filter) {
+		return null;
+	}
+
 }
