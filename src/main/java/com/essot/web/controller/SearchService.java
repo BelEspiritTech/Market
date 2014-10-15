@@ -1,5 +1,7 @@
 package com.essot.web.controller;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.essot.web.controller.data.ProductDetails;
+import com.essot.web.controller.data.SearchResponse;
 import com.essot.web.delegate.EssotDelegate;
 import com.essot.web.delegate.concrete.SearchDelegate;
 
@@ -27,12 +30,12 @@ public class SearchService {
 	@GET
 	@Path( "/{param}" )
 	public Response doSearch(@PathParam( "param" ) String searchText){
-		Object returnObj = null;
+		SearchResponse returnObj = null;
 		try{
-			ProductDetails delegateResponse = ((SearchDelegate)searchDelegate).getSearchResults(searchText);
-			 if(delegateResponse != null && delegateResponse.getProductDetails() != null){
-				// returnObj = new SearchResponse();
-				// returnObj.setDetails(delegateResponse);
+			List<ProductDetails> delegateResponse = ((SearchDelegate)searchDelegate).getSearchResults(searchText);
+			 if(delegateResponse != null && !delegateResponse.isEmpty()){
+				 returnObj = new SearchResponse();
+				returnObj.setResult(delegateResponse);
 			 }
 		}
 		catch( Exception e ){

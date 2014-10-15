@@ -3,8 +3,6 @@ package com.essot.web.controller.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.essot.web.backend.entity.concrete.RelatedSKUs;
-
 public class ProductDetails {
 	private ProductCategoryDetails productDetails;
 	

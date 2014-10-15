@@ -18,31 +18,33 @@ public class SearchDelegate extends EssotDelegate {
 	@Autowired
 	IEssotDAO productDAO;
 	
-	public ProductDetails getSearchResults(String searchText){
+	public List<ProductDetails> getSearchResults(String searchText){
 		
-		ProductDetails details = new ProductDetails();
+		List<ProductDetails> searchResults = new ArrayList<ProductDetails>();
+
 		Collection<Object> searchBy = new ArrayList<Object>();
-		
 		searchBy.add(searchText);
-		
 		List<IEssotEntity>  products =  productDAO.searchOnIndexes(searchBy);
-		
-		
 				
 		if(products != null && !products.isEmpty()){
-			for(IEssotEntity product : products){
-				ProductCategoryDetails productDetails = new ProductCategoryDetails();
+			for(IEssotEntity productEntity : products){
 				
-				productDetails.setDescription(((Product)product).getDescription());
-				productDetails.setName(((Product)product).getName());
-				productDetails.setSkuName(((Product)product).getSkuName());
-				productDetails.setPrice(((Product)product).getB2cNowPrice());
-				productDetails.setLongDescription(((Product)product).getLongDescription());
+				ProductDetails productDetails = new ProductDetails();
 				
-				//details.a
+				ProductCategoryDetails product = new ProductCategoryDetails();
+				
+				product.setDescription(((Product)productEntity).getDescription());
+				product.setName(((Product)productEntity).getName());
+				product.setSkuName(((Product)productEntity).getSkuName());
+				product.setPrice(((Product)productEntity).getB2cNowPrice());
+				product.setLongDescription(((Product)productEntity).getLongDescription());
+				
+				productDetails.setProductDetails(product);
+				
+				searchResults.add(productDetails);
 			}
 		}
-		return details;
+		return searchResults;
 	}
 
 	@Override

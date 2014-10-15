@@ -20,7 +20,6 @@ import com.essot.web.controller.data.GetProductCategoryResponse;
 import com.essot.web.controller.data.Menu;
 import com.essot.web.delegate.EssotDelegate;
 import com.essot.web.delegate.concrete.ProductCategoryDelegate;
-import com.essot.web.upload.DataUploadDelegate;
 
 @Component
 @Path("/category")

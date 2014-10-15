@@ -21,6 +21,7 @@
 	<bean id="categoryDelegate" class="com.essot.web.delegate.concrete.ProductCategoryDelegate" />
 	<bean id="productCategoryDelegate" class="com.essot.web.delegate.concrete.ProductCategoryXProductDelegate" />
 	<bean id="productDelegate" class="com.essot.web.delegate.concrete.ProductDelegate" />
+	<bean id="searchDelegate" class="com.essot.web.delegate.concrete.SearchDelegate" />
 	<bean id="uploadDelegate" class="com.essot.web.upload.DataUploadDelegate" />
 	
 	

@@ -6,10 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.essot.web.backend.dao.DAOFactory;
-import com.essot.web.backend.dao.IEssotDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.Product;
 import com.essot.web.backend.entity.concrete.ProductCategory;
@@ -19,16 +16,9 @@ import com.essot.web.controller.data.MenuData;
 
 public class MenuUtil {
 
-	@Autowired
-	static DAOFactory daoFactory; 
-	@Autowired
-	static IEssotDAO productCategoryDAO;
-	
 	private static MenuUtil utility;
 	
 	private static List<MenuData> categories;
-	
-	public static Boolean dbOperation = false;
 	
 	/**
 	 * 
@@ -147,16 +137,16 @@ public class MenuUtil {
 	 * 
 	 * @return
 	 */
-	public static List<MenuData> setValidCategoryCache(){
+	public static List<MenuData> setValidCategoryCache(DAOFactory daoFactory){
 		ProductCategory prodCat = new ProductCategory();
 		
 		List<IEssotEntity> categoryList = daoFactory.getDAOClass(prodCat).readAllData();
 		//Get All The Sub-Categories.
 		List<IEssotEntity> subCatList = getSubCategoryList(categoryList);
 		//Get All the PROD_X_CAT
-		List<IEssotEntity> prodXCat = getProductXCatList(subCatList);
+		List<IEssotEntity> prodXCat = getProductXCatList(subCatList, daoFactory);
 		//Get All Relevant SKUS
-		Set<Integer> validSubCategory = getValidSubCat(prodXCat);
+		Set<Integer> validSubCategory = getValidSubCat(prodXCat, daoFactory);
 		
 		MenuUtil.clearMenuCache();		//Clear the Menu Cache before the fresh build.
 		
@@ -213,7 +203,7 @@ public class MenuUtil {
 	 * @param list
 	 * @return
 	 */
-	private static List<IEssotEntity> getProductXCatList(List<IEssotEntity> list){
+	private static List<IEssotEntity> getProductXCatList(List<IEssotEntity> list, DAOFactory daoFactory){
 		ProductCategoryXProduct prodXCat = new ProductCategoryXProduct();
 		List<IEssotEntity> prodXCatList = new ArrayList<IEssotEntity>();
 		for(IEssotEntity subcat : list){
@@ -230,7 +220,7 @@ public class MenuUtil {
 	 * @param prodXCategoryList
 	 * @return
 	 */
-	private static Set<Integer> getValidSubCat(List<IEssotEntity> prodXCategoryList){
+	private static Set<Integer> getValidSubCat(List<IEssotEntity> prodXCategoryList, DAOFactory daoFactory){
 		Product product = new Product();
 		Set<Integer> vSubCatKeyList = new LinkedHashSet<Integer>();
 		for(IEssotEntity productXCat : prodXCategoryList){
@@ -241,5 +231,4 @@ public class MenuUtil {
 		}
 		return vSubCatKeyList;
 	}
-	
 }

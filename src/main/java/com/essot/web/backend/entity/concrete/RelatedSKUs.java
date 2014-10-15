@@ -12,6 +12,11 @@ import com.essot.web.backend.entity.IEssotEntity;
 @Entity
 @Table(name = "ESSOT_RELATED_SKUS")
 public class RelatedSKUs implements IEssotEntity{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column(name = "SKU")
 	private String 	sku;

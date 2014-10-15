@@ -1,6 +1,5 @@
 package com.essot.web.delegate.concrete;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.essot.web.backend.dao.IEssotDAO;
-import com.essot.web.backend.dao.concrete.RelatedSKUDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.Product;
 import com.essot.web.backend.entity.concrete.ProductXENCode;

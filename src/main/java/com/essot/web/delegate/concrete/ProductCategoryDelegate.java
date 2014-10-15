@@ -1,8 +1,6 @@
 package com.essot.web.delegate.concrete;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.essot.web.backend.dao.IEssotDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.ProductCategory;
-import com.essot.web.backend.entity.concrete.ProductCategoryXProduct;
 import com.essot.web.controller.data.CategoryDetails;
 import com.essot.web.controller.data.GetProductCategoryResponse;
 import com.essot.web.controller.data.Menu;
@@ -140,7 +137,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	 */
 	public synchronized List<MenuData> getMenuFromDB(){
 		
-		List<MenuData> data = MenuUtil.setValidCategoryCache();
+		List<MenuData> data = MenuUtil.setValidCategoryCache(daoFactory);
 		return data;
 	}
 	

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.essot.web.backend.entity.concrete.Product;
 import com.essot.web.controller.data.GetProductDetailsResponse;
 import com.essot.web.controller.data.ProductDetails;
 import com.essot.web.delegate.EssotDelegate;

@@ -2,12 +2,9 @@ package com.essot.web.upload;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,20 +13,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.essot.web.backend.dao.DAOFactory;
-import com.essot.web.backend.entity.IEssotEntity;
-import com.essot.web.backend.entity.concrete.Product;
-import com.essot.web.backend.entity.concrete.ProductCategory;
-import com.essot.web.backend.entity.concrete.ProductCategoryXProduct;
-import com.essot.web.controller.data.MenuData;
 import com.essot.web.upload.data.BasicExcelData;
 import com.essot.web.util.MenuUtil;
 import com.essot.web.util.ResourceReader;
 
 public class DataUploadDelegate {
-	
-	@Autowired
-	private DAOFactory daoFactory;
 	
 	private BasicExcelData excelData;
 	
@@ -99,7 +87,7 @@ public class DataUploadDelegate {
 	        	this.pushAdditionalData();
 	        }
 	        //check valid category.
-	        setValidCategoryCache();
+	        excelHelper.setValidCategoryCache();
 	    }catch(Exception e){
 	    	System.out.println("Exception caught while reading workbook : "+e.getMessage());
 	    }
@@ -246,8 +234,5 @@ public class DataUploadDelegate {
 			excelHelper.pushRelSKUs(data);
 			data.getRelSKU().clear();
 		}
-	}
-	private void setValidCategoryCache(){
-		MenuUtil.setValidCategoryCache();
 	}
 }

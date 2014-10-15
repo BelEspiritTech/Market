@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -398,9 +397,8 @@ public class ExcelDataHelper {
 	
 	/**
 	 * 
-	 * @param entity
 	 */
-	private void updateEntity(IEssotEntity entity){
-		daoFactory.getDAOClass(entity).updateEntity(entity);
+	public void setValidCategoryCache(){
+		MenuUtil.setValidCategoryCache(daoFactory);
 	}
 }
