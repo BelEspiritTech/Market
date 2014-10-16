@@ -140,11 +140,8 @@ public class MenuUtil {
 	public static List<MenuData> setValidCategoryCache(DAOFactory daoFactory){
 		ProductCategory prodCat = new ProductCategory();
 		
-		List<IEssotEntity> categoryList = daoFactory.getDAOClass(prodCat).readAllData();
-		//Get All The Sub-Categories.
-		List<IEssotEntity> subCatList = getSubCategoryList(categoryList);
 		//Get All the PROD_X_CAT
-		List<IEssotEntity> prodXCat = getProductXCatList(subCatList, daoFactory);
+		List<IEssotEntity> prodXCat = getProductXCatList(getSubCategoryList(daoFactory.getDAOClass(prodCat).readAllData()), daoFactory);
 		//Get All Relevant SKUS
 		Set<Integer> validSubCategory = getValidSubCat(prodXCat, daoFactory);
 		
@@ -157,9 +154,10 @@ public class MenuUtil {
 			if(subCategory != null){
 				Integer parentKey = ((ProductCategory)subCategory).getParentCategoryKey();
 				if(!categoryKeys.contains(parentKey)){
-					do{
+					while(parentKey != 0){
 						IEssotEntity category = daoFactory.getDAOClass(prodCat).findEntityById(parentKey);
 						if(category != null){
+							categoryKeys.add(parentKey);
 							parentKey = ((ProductCategory)category).getParentCategoryKey();
 							MenuData catData = new MenuData();
 							catData.setCategoryID(((ProductCategory)category).getProductCategoryKey());
@@ -169,9 +167,9 @@ public class MenuUtil {
 							list.add(catData);
 							MenuUtil.addCategoryToCache(catData);
 						}
-					}while(parentKey.intValue() != 0);
+					}
 				}
-				categoryKeys.add(parentKey);
+				
 				MenuData subCatData = new MenuData();
 				subCatData.setCategoryID(((ProductCategory)subCategory).getProductCategoryKey());
 				subCatData.setCategoryName(((ProductCategory)subCategory).getName());
@@ -226,9 +224,14 @@ public class MenuUtil {
 		for(IEssotEntity productXCat : prodXCategoryList){
 			IEssotEntity prod = daoFactory.getDAOClass(product).
 					findEntityById(((ProductCategoryXProduct)productXCat).getSkuName());
-			if(prod != null && ((Product)prod).getActiveFlag().equalsIgnoreCase("Y"))
-				vSubCatKeyList.add(((ProductCategoryXProduct)productXCat).getProductCategoryKey());
+			if(prod != null && ((Product)prod).getActiveFlag().equalsIgnoreCase("Y")){
+				
+				if(!vSubCatKeyList.contains(((ProductCategoryXProduct)productXCat).getProductCategoryKey())){
+					vSubCatKeyList.add(((ProductCategoryXProduct)productXCat).getProductCategoryKey());
+				}
+			}
 		}
+		
 		return vSubCatKeyList;
 	}
 }

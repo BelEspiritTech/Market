@@ -56,5 +56,10 @@ public class MenuData {
 
 	public void setPriority(Integer priority) {
 		this.priority = priority;
-	}	
+	}
+	
+	public String toString(){
+		return categoryName + " " + categoryID;
+		
+	}
 }
