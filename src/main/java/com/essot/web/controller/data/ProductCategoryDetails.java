@@ -12,6 +12,8 @@ public class ProductCategoryDetails {
 	private String longDescription;
 	
 	private Integer price;
+	
+	private Integer priority;
 
 	public String getSkuName() {
 		return skuName;
@@ -57,5 +59,19 @@ public class ProductCategoryDetails {
 	 */
 	public void setLongDescription(String longDescription) {
 		this.longDescription = longDescription;
-	}	
+	}
+
+	/**
+	 * @return the priority
+	 */
+	public Integer getPriority() {
+		return priority;
+	}
+
+	/**
+	 * @param priority the priority to set
+	 */
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
 }

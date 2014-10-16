@@ -2,6 +2,7 @@ package com.essot.web.delegate.concrete;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import com.essot.web.controller.data.ProductFeatures;
 import com.essot.web.controller.data.ProductTechSpecs;
 import com.essot.web.controller.data.RelatedProductDetails;
 import com.essot.web.delegate.EssotDelegate;
+import com.essot.web.util.EssotComparatorEnum;
+import com.essot.web.util.EssotComparatorFactory;
 
 public class ProductDelegate extends EssotDelegate {
 
@@ -38,22 +41,67 @@ public class ProductDelegate extends EssotDelegate {
 	@Autowired
 	IEssotDAO productEnCodeDAO;
 	
+	/**
+	 * 
+	 */
 	public void persistEntity(IEssotEntity entity) {
 		productDAO.persistEntity(entity);
 	}
 
+	/**
+	 * 
+	 */
 	public IEssotEntity findEntityById(Integer id) {
 		return productDAO.findEntityById(id);
 	}
 
+	/**
+	 * 
+	 */
 	public void updateEntity(IEssotEntity entity) {
 		productDAO.updateEntity(entity);
 	}
 
+	/**
+	 * 
+	 */
 	public void deleteEntity(IEssotEntity entity) {
 		productDAO.deleteEntity(entity);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<ProductCategoryDetails> getDisplayProducts(){
+		List<ProductCategoryDetails> diplayProducts = new ArrayList<ProductCategoryDetails>();
+		List<IEssotEntity>  products = productDAO.readAllData();
+		if(products != null && !products.isEmpty()){
+			for(IEssotEntity product : products){
+				
+				if(("Y").equals(((Product)product).getActiveFlag()) && ((Product)product).getPriority() != 0  ){
+					ProductCategoryDetails productDetails = new ProductCategoryDetails();
+					
+					productDetails.setDescription(((Product)product).getDescription());
+					productDetails.setName(((Product)product).getName());
+					productDetails.setSkuName(((Product)product).getSkuName());
+					productDetails.setPrice(((Product)product).getB2cNowPrice());
+					productDetails.setLongDescription(((Product)product).getLongDescription());
+					productDetails.setPriority(((Product)product).getPriority());
+					
+					diplayProducts.add(productDetails);
+				}
+			}
+		}
+		Collections.sort(diplayProducts, EssotComparatorFactory.getInstance(EssotComparatorEnum.HOME_PRODUCTS));
+		return diplayProducts;
+	}
+	
+	/**
+	 * 
+	 * @param skuName
+	 * @return
+	 */
 	public ProductDetails getDetailsForProduct(String skuName){
 		
 		ProductDetails details = new ProductDetails();
@@ -63,8 +111,6 @@ public class ProductDelegate extends EssotDelegate {
 		
 		List<IEssotEntity>  products =  productDAO.getFilteredListOnPrimarKey(productSKUNames);
 		
-		
-				
 		if(products != null && !products.isEmpty()){
 			for(IEssotEntity product : products){
 				ProductCategoryDetails productDetails = new ProductCategoryDetails();
@@ -130,6 +176,12 @@ public class ProductDelegate extends EssotDelegate {
 		}
 		return details;
 	}
+	
+	/**
+	 * 
+	 * @param sku
+	 * @return
+	 */
 	public String getProductName(String sku){
 		String name = "";
 		IEssotEntity  products =  productDAO.findEntityById(sku);
@@ -139,6 +191,12 @@ public class ProductDelegate extends EssotDelegate {
 		}
 		return name;
 	}
+	
+	/**
+	 * 
+	 * @param relSKUs
+	 * @return
+	 */
 	public List<RelatedProductDetails> getRelatedProdDetails(Collection<Object> relSKUs){
 		List<IEssotEntity>  products =  productDAO.getFilteredListOnPrimarKey(relSKUs);
 		List<RelatedProductDetails> relProdList = new ArrayList<RelatedProductDetails>();

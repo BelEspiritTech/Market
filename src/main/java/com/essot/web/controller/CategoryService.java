@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.essot.web.controller.data.CategoryDetails;
-import com.essot.web.controller.data.GetAllCategoryResponse;
+import com.essot.web.controller.data.GetHomePageResponse;
 import com.essot.web.controller.data.GetMenuResponse;
 import com.essot.web.controller.data.GetProductCategoryResponse;
 import com.essot.web.controller.data.Menu;
+import com.essot.web.controller.data.ProductCategoryDetails;
 import com.essot.web.delegate.EssotDelegate;
 import com.essot.web.delegate.concrete.ProductCategoryDelegate;
+import com.essot.web.delegate.concrete.ProductDelegate;
 
 @Component
 @Path("/category")
@@ -30,16 +32,28 @@ public class CategoryService {
 	@Autowired
 	private EssotDelegate categoryDelegate;
 	
+	@Autowired
+	private EssotDelegate productDelegate;
+	
 	@GET
-	@Path( "/all" )
+	@Path( "/home" )
 	public Response getAllCategories(){
-		GetAllCategoryResponse returnObj = null;
+		GetHomePageResponse returnObj = null;
 		try{
-			 List<CategoryDetails> delegateResponse = ((ProductCategoryDelegate)categoryDelegate).getAllCategoryInfo();
+			 List<CategoryDetails> delegateResponse = ((ProductCategoryDelegate)categoryDelegate).getDisplayCategories();
 			 if(delegateResponse != null && delegateResponse.size() > 0){
-				 returnObj = new GetAllCategoryResponse();
+				 returnObj = new GetHomePageResponse();
 				 returnObj.setCategories(delegateResponse);
 			 }
+			 
+			 List<ProductCategoryDetails> productResponse = ((ProductDelegate)productDelegate).getDisplayProducts();
+			 if(productResponse != null && productResponse.size() > 0){
+				 if(returnObj == null){
+					 returnObj = new GetHomePageResponse();
+				 }
+				 
+				 returnObj.setTopProducts(productResponse);
+			 }		 
 		}
 		catch( Exception e ){
 			throw new WebApplicationException( Response.Status.INTERNAL_SERVER_ERROR );

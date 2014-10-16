@@ -22,7 +22,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	@Autowired
 	IEssotDAO productCategoryDAO;
 	
-	public List<CategoryDetails> getAllCategoryInfo(){
+	public List<CategoryDetails> getDisplayCategories(){
 		
 		List<CategoryDetails> categoryDetails = new ArrayList<CategoryDetails>();
 		List<MenuData>  categories = MenuUtil.getCategories();
@@ -58,25 +58,68 @@ public class ProductCategoryDelegate extends EssotDelegate {
 			data = this.getMenuFromDB();
 		}
 		
+		List<MenuData> leftOvers = new ArrayList<MenuData>();
+		
 		for(MenuData item : data){
+			boolean added = false;
 			Menu menu = new Menu();
+			menu.setCategoryID(item.getCategoryID());
+			menu.setCategoryName(item.getCategoryName());
 			
 			if(item.getParentCategoryID() == null || item.getParentCategoryID() == 0){
+				retData.add(menu);
+				added = true;
+			}else{
+				for(Menu retItem : retData){
+					if(retItem.getCategoryID().intValue() == item.getParentCategoryID().intValue()){
+						retItem.addSubCategory(menu);
+						added = true;
+						break;
+					}else{
+						for(Menu subItem : retItem.getSubCategories()){
+							if(subItem.getCategoryID().intValue() == item.getParentCategoryID().intValue()){
+								subItem.addSubCategory(menu);
+								added = true;
+								break;
+							}
+						}
+						
+						if(added){
+							break;
+						}
+					}
+				}
+			}
+			
+			if(!added){
+				leftOvers.add(item);
+			}
+		}
+		
+		if(!leftOvers.isEmpty()){
+			for(MenuData item : leftOvers){
+				Menu menu = new Menu();
+				boolean added = false;
 				menu.setCategoryID(item.getCategoryID());
 				menu.setCategoryName(item.getCategoryName());
 				
-				retData.add(menu);
-			}else{
-				
 				for(Menu retItem : retData){
 					if(retItem.getCategoryID().intValue() == item.getParentCategoryID().intValue()){
-						
-						menu.setCategoryID(item.getCategoryID());
-						menu.setCategoryName(item.getCategoryName());
-						
 						retItem.addSubCategory(menu);
-						
+						added = true;				
 						break;
+					}else{
+						for(Menu subItem : retItem.getSubCategories()){
+							if(subItem.getCategoryID().intValue() == item.getParentCategoryID().intValue()){
+								subItem.addSubCategory(menu);
+								added = true;
+								break;
+							}
+						}
+						
+						if(added){
+							break;
+						}
 					}
 				}
 			}
@@ -84,6 +127,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 			
 		return retData;
 	}
+	
 	/**
 	 * 
 	 */
