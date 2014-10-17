@@ -12,6 +12,9 @@ import com.sun.jersey.spi.container.ContainerResponseFilter;
 @Component
 public class SimpleCORSFilter implements ContainerResponseFilter {
 
+	/**
+	 * 
+	 */
 	public ContainerResponse filter(ContainerRequest req,
 			ContainerResponse contResp) {
 		 ResponseBuilder resp = Response.fromResponse(contResp.getResponse());
@@ -25,6 +28,7 @@ public class SimpleCORSFilter implements ContainerResponseFilter {
 	        }
 	 
 	        contResp.setResponse(resp.build());
-	            return contResp;
+	        
+	        return contResp;
 	    }
 	}
