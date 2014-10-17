@@ -28,28 +28,28 @@ public class ProductDelegate extends EssotDelegate {
 	 * 
 	 */
 	public void persistEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).persistEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT).persistEntity(entity);
 	}
 
 	/**
 	 * 
 	 */
 	public IEssotEntity findEntityById(Integer id) {
-		return daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).findEntityById(id);
+		return daoFactory.getDAO(EssotDAOEnum.PRODUCT).findEntityById(id);
 	}
 
 	/**
 	 * 
 	 */
 	public void updateEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).updateEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT).updateEntity(entity);
 	}
 
 	/**
 	 * 
 	 */
 	public void deleteEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).deleteEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT).deleteEntity(entity);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class ProductDelegate extends EssotDelegate {
 	 */
 	public List<ProductCategoryDetails> getDisplayProducts(){
 		List<ProductCategoryDetails> diplayProducts = new ArrayList<ProductCategoryDetails>();
-		List<IEssotEntity>  products = daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).readAllData();
+		List<IEssotEntity>  products = daoFactory.getDAO(EssotDAOEnum.PRODUCT).readAllData();
 		if(products != null && !products.isEmpty()){
 			for(IEssotEntity product : products){
 				
@@ -93,7 +93,7 @@ public class ProductDelegate extends EssotDelegate {
 		
 		productSKUNames.add(skuName);
 		
-		List<IEssotEntity>  products =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(productSKUNames);
+		List<IEssotEntity>  products =  daoFactory.getDAO(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(productSKUNames);
 		
 		if(products != null && !products.isEmpty()){
 			for(IEssotEntity product : products){
@@ -105,7 +105,7 @@ public class ProductDelegate extends EssotDelegate {
 				productDetails.setPrice(((Product)product).getB2cNowPrice());
 				productDetails.setLongDescription(((Product)product).getLongDescription());
 				
-				List<IEssotEntity> features =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_X_FEATURE).getFilteredListOnPrimarKey(productSKUNames);
+				List<IEssotEntity> features =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_FEATURE).getFilteredListOnPrimarKey(productSKUNames);
 				
 				if(features != null && !features.isEmpty()){
 					for(IEssotEntity feature : features){
@@ -117,7 +117,7 @@ public class ProductDelegate extends EssotDelegate {
 					}
 				}
 				
-				List<IEssotEntity> enCodes =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_X_EN_CODE).getFilteredListOnPrimarKey(productSKUNames);
+				List<IEssotEntity> enCodes =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_EN_CODE).getFilteredListOnPrimarKey(productSKUNames);
 				
 				if(enCodes != null && !enCodes.isEmpty()){
 					for(IEssotEntity enCode : enCodes){
@@ -132,7 +132,7 @@ public class ProductDelegate extends EssotDelegate {
 				}
 
 				
-				List<IEssotEntity> specs =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_X_TECH_SPEC).getFilteredListOnPrimarKey(productSKUNames);
+				List<IEssotEntity> specs =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_TECH_SPEC).getFilteredListOnPrimarKey(productSKUNames);
 				
 				if(specs != null && !specs.isEmpty()){
 					for(IEssotEntity spec : specs){
@@ -147,7 +147,7 @@ public class ProductDelegate extends EssotDelegate {
 				details.setProductDetails(productDetails);
 			}
 			
-			List<IEssotEntity> releatedSKUs = daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.RELATED_SKU).getFilteredListOnPrimarKey(productSKUNames);
+			List<IEssotEntity> releatedSKUs = daoFactory.getDAO(EssotDAOEnum.RELATED_SKU).getFilteredListOnPrimarKey(productSKUNames);
 			
 			if(releatedSKUs != null & !releatedSKUs.isEmpty()){
 				Collection<Object> relSKUs = new ArrayList<Object>();
@@ -168,7 +168,7 @@ public class ProductDelegate extends EssotDelegate {
 	 */
 	public String getProductName(String sku){
 		String name = "";
-		IEssotEntity  products =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).findEntityById(sku);
+		IEssotEntity  products =  daoFactory.getDAO(EssotDAOEnum.PRODUCT).findEntityById(sku);
 		if(products != null){
 		
 			Product product = (Product)products;
@@ -185,7 +185,7 @@ public class ProductDelegate extends EssotDelegate {
 	 */
 	public List<RelatedProductDetails> getRelatedProdDetails(Collection<Object> relSKUs){
 		
-		List<IEssotEntity>  products =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(relSKUs);
+		List<IEssotEntity>  products =  daoFactory.getDAO(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(relSKUs);
 		List<RelatedProductDetails> relProdList = new ArrayList<RelatedProductDetails>();
 		if(products != null && !products.isEmpty()){
 			for(IEssotEntity prod : products){

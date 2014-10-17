@@ -138,10 +138,9 @@ public class MenuUtil {
 	 * @return
 	 */
 	public static List<MenuData> setValidCategoryCache(DAOFactory daoFactory){
-		ProductCategory prodCat = new ProductCategory();
-		
+
 		//Get All the PROD_X_CAT
-		List<IEssotEntity> prodXCat = getProductXCatList(getSubCategoryList(daoFactory.getDAOClass(prodCat).readAllData()), daoFactory);
+		List<IEssotEntity> prodXCat = getProductXCatList(getSubCategoryList(daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).readAllData()), daoFactory);
 		//Get All Relevant SKUS
 		Set<Integer> validSubCategory = getValidSubCat(prodXCat, daoFactory);
 		
@@ -150,12 +149,12 @@ public class MenuUtil {
 		List<MenuData> list = new ArrayList<MenuData>();
 		Set<Integer> categoryKeys = new LinkedHashSet<Integer>();
 		for(Integer catKey: validSubCategory){
-			IEssotEntity subCategory = daoFactory.getDAOClass(prodCat).findEntityById(catKey);
+			IEssotEntity subCategory = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(catKey);
 			if(subCategory != null){
 				Integer parentKey = ((ProductCategory)subCategory).getParentCategoryKey();
 				if(!categoryKeys.contains(parentKey)){
 					while(parentKey != 0){
-						IEssotEntity category = daoFactory.getDAOClass(prodCat).findEntityById(parentKey);
+						IEssotEntity category = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(parentKey);
 						if(category != null){
 							categoryKeys.add(parentKey);
 							parentKey = ((ProductCategory)category).getParentCategoryKey();
@@ -202,12 +201,11 @@ public class MenuUtil {
 	 * @return
 	 */
 	private static List<IEssotEntity> getProductXCatList(List<IEssotEntity> list, DAOFactory daoFactory){
-		ProductCategoryXProduct prodXCat = new ProductCategoryXProduct();
 		List<IEssotEntity> prodXCatList = new ArrayList<IEssotEntity>();
 		for(IEssotEntity subcat : list){
 			Collection<Object> catKey = new ArrayList<Object>();
 			catKey.add(((ProductCategory)subcat).getProductCategoryKey());
-			List<IEssotEntity> prodXCats = daoFactory.getDAOClass(prodXCat).getFilteredListOnPrimarKey(catKey);
+			List<IEssotEntity> prodXCats = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).getFilteredListOnPrimarKey(catKey);
 			if(prodXCats != null && !prodXCats.isEmpty())
 				prodXCatList.addAll(prodXCats);
 		}
@@ -219,10 +217,9 @@ public class MenuUtil {
 	 * @return
 	 */
 	private static Set<Integer> getValidSubCat(List<IEssotEntity> prodXCategoryList, DAOFactory daoFactory){
-		Product product = new Product();
 		Set<Integer> vSubCatKeyList = new LinkedHashSet<Integer>();
 		for(IEssotEntity productXCat : prodXCategoryList){
-			IEssotEntity prod = daoFactory.getDAOClass(product).
+			IEssotEntity prod = daoFactory.getDAO(EssotDAOEnum.PRODUCT).
 					findEntityById(((ProductCategoryXProduct)productXCat).getSkuName());
 			if(prod != null && ((Product)prod).getActiveFlag().equalsIgnoreCase("Y")){
 				

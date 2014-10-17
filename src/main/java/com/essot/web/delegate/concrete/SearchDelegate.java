@@ -24,7 +24,7 @@ public class SearchDelegate extends EssotDelegate {
 
 		Collection<Object> searchBy = new ArrayList<Object>();
 		searchBy.add(searchText);
-		List<IEssotEntity>  products =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).searchOnIndexes(searchBy);
+		List<IEssotEntity>  products =  daoFactory.getDAO(EssotDAOEnum.PRODUCT).searchOnIndexes(searchBy);
 				
 		if(products != null && !products.isEmpty()){
 			for(IEssotEntity productEntity : products){
@@ -50,21 +50,21 @@ public class SearchDelegate extends EssotDelegate {
 
 	@Override
 	public void persistEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).persistEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT).persistEntity(entity);
 	}
 
 	@Override
 	public IEssotEntity findEntityById(Integer id) {
-		return daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).findEntityById(id);
+		return daoFactory.getDAO(EssotDAOEnum.PRODUCT).findEntityById(id);
 	}
 
 	@Override
 	public void updateEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).updateEntity(entity);		
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT).updateEntity(entity);		
 	}
 
 	@Override
 	public void deleteEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).deleteEntity(entity);		
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT).deleteEntity(entity);		
 	}		
 }

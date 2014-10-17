@@ -138,7 +138,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 		Integer intKey = new Integer(key);
 		
 		do{
-			IEssotEntity  category =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(intKey);
+			IEssotEntity  category =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(intKey);
 			
 			if(category != null){
 				if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
@@ -162,28 +162,28 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	 * 
 	 */
 	public void persistEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).persistEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).persistEntity(entity);
 	}
 
 	/**
 	 * 
 	 */
 	public IEssotEntity findEntityById(Integer id) {
-		return daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(id);
+		return daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(id);
 	}
 
 	/**
 	 * 
 	 */
 	public void updateEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).updateEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).updateEntity(entity);
 	}
 
 	/**
 	 * 
 	 */
 	public void deleteEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).deleteEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).deleteEntity(entity);
 	}
 	
 	/**

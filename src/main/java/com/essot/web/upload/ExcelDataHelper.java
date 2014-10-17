@@ -21,6 +21,7 @@ import com.essot.web.backend.entity.concrete.ProductXTechSpec;
 import com.essot.web.backend.entity.concrete.RelatedSKUs;
 import com.essot.web.controller.data.MenuData;
 import com.essot.web.upload.data.BasicExcelData;
+import com.essot.web.util.EssotDAOEnum;
 import com.essot.web.util.MenuUtil;
 
 public class ExcelDataHelper {
@@ -53,7 +54,7 @@ public class ExcelDataHelper {
 		entity.setUpdateDate(new Date());
 		entity.setUpdatedBy(1);
 		
-		Integer id = (Integer)this.persistEntity(entity);
+		Integer id = (Integer)this.persistEntity(entity, EssotDAOEnum.PRODUCT_CATEGORY);
 		
 		MenuData data = new MenuData();
 		
@@ -85,8 +86,6 @@ public class ExcelDataHelper {
 	 */
 	private void updateProductCategory(BasicExcelData data){
 		
-		ProductCategoryXProduct blank = new ProductCategoryXProduct();
-		blank.setSkuName(data.getSkuName());
 		Collection<Object> categoryList = new ArrayList<Object>();
 		Set<String> set = data.getSubCategory();
 		Iterator<String> itr = set.iterator();
@@ -94,11 +93,11 @@ public class ExcelDataHelper {
 			String subCategory = (String)itr.next();
 			Integer catKey = MenuUtil.getMenu(subCategory).getCategoryID();
 			categoryList.add(catKey);
-			List<IEssotEntity> productList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(categoryList);
+			List<IEssotEntity> productList = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).getFilteredListOnPrimarKey(categoryList);
 			boolean isExist = false;
 			if(productList != null && !productList.isEmpty()){
 				for(IEssotEntity product : productList ) {
-					if(blank.getSkuName().equalsIgnoreCase(((ProductCategoryXProduct)product).getSkuName())){
+					if(data.getSkuName().equalsIgnoreCase(((ProductCategoryXProduct)product).getSkuName())){
 						isExist = true;
 						break;
 						}
@@ -120,7 +119,7 @@ public class ExcelDataHelper {
 					entity.setUpdateDate(new Date());
 					entity.setUpdatedBy(0);
 					
-					this.persistEntity(entity);
+					this.persistEntity(entity, EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT);
 				
 			}
 		}
@@ -133,20 +132,18 @@ public class ExcelDataHelper {
 	 */
 	private void updateProduct(BasicExcelData data){
 		
-		Product blank = new Product();
-		blank.setSkuName(data.getSkuName());
-		
+		Product productInDB = null;
 		Collection<Object> skuList = new ArrayList<Object>();
 		skuList.add(data.getSkuName());
-		
-		List<IEssotEntity> productList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuList);
+				
+		List<IEssotEntity> productList = daoFactory.getDAO(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(skuList);
 		boolean isExist = false;
 		
 		if(productList != null && !productList.isEmpty()){
 			for(IEssotEntity product : productList ) {
-				if(blank.getSkuName().equalsIgnoreCase(((Product)product).getSkuName())){
+				if(data.getSkuName().equalsIgnoreCase(((Product)product).getSkuName())){
 					isExist = true;
-					blank = (Product)product;
+					productInDB = (Product)product;
 					break;
 				}				
 			}
@@ -200,16 +197,16 @@ public class ExcelDataHelper {
 			entity.setPriority(data.getPriority());
 			entity.setValidFlag(0);
 			
-			this.persistEntity(entity);
+			this.persistEntity(entity, EssotDAOEnum.PRODUCT);
 		}else{
 			//Product Already exists. Update product
-			blank.setB2cNowPrice(data.getPrice());
-			blank.setDescription(data.getShortDesc());
-			blank.setLongDescription(data.getLongDesc());
-			blank.setActiveFlag(data.getActiveFlag());
-			blank.setName(data.getProductName());
+			productInDB.setB2cNowPrice(data.getPrice());
+			productInDB.setDescription(data.getShortDesc());
+			productInDB.setLongDescription(data.getLongDesc());
+			productInDB.setActiveFlag(data.getActiveFlag());
+			productInDB.setName(data.getProductName());
 			
-			this.persistEntity(blank);
+			this.persistEntity(productInDB, EssotDAOEnum.PRODUCT);
 			
 		}
 		
@@ -232,14 +229,10 @@ public class ExcelDataHelper {
 	public void pushEnCodes(BasicExcelData data){
 		List<String> enCodes = data.getEncodes();
 		
-		//getAll EnCodes
-		ProductXENCode blank = new ProductXENCode();
-		blank.setSkuName(data.getSkuName());
-		
 		Collection<Object> skuNameList = new ArrayList<Object>();
 		skuNameList.add(data.getSkuName());
 		
-		List<IEssotEntity> enCodeList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuNameList);
+		List<IEssotEntity> enCodeList = daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_EN_CODE).getFilteredListOnPrimarKey(skuNameList);
 		
 		if(enCodeList != null && !enCodeList.isEmpty()){
 			for(IEssotEntity enCode : enCodeList ) {
@@ -259,7 +252,7 @@ public class ExcelDataHelper {
 			entity.setUpdateDate(new Date());
 			entity.setUpdatedBy(0);
 			
-			this.persistEntity(entity);
+			this.persistEntity(entity, EssotDAOEnum.PRODUCT_X_EN_CODE);
 		}
 	}
 	
@@ -269,14 +262,11 @@ public class ExcelDataHelper {
 	 */
 	public void pushFeatures(BasicExcelData data){
 		List<String> features = data.getFeatures();
-		//getAll Features
-		ProductXFeature blank = new ProductXFeature();
-		blank.setSkuName(data.getSkuName());
 		
 		Collection<Object> skuNameList = new ArrayList<Object>();
 		skuNameList.add(data.getSkuName());
 		
-		List<IEssotEntity> featureList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuNameList);
+		List<IEssotEntity> featureList = daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_FEATURE).getFilteredListOnPrimarKey(skuNameList);
 		Integer maxValue = 0;
 		
 		if(featureList != null && !featureList.isEmpty()){
@@ -305,7 +295,7 @@ public class ExcelDataHelper {
 			entity.setStatus(0);
 			entity.setValue(feature);
 			
-			this.persistEntity(entity);
+			this.persistEntity(entity, EssotDAOEnum.PRODUCT_X_FEATURE);
 		}
 	}
 	
@@ -316,14 +306,11 @@ public class ExcelDataHelper {
 	 */
 	public void pushTechSpecs(BasicExcelData data){
 		List<String> specs = data.getTechSpecs();
-		//getAll EnCodes
-		ProductXTechSpec blank = new ProductXTechSpec();
-		blank.setSkuName(data.getSkuName());
 		
 		Collection<Object> skuNameList = new ArrayList<Object>();
 		skuNameList.add(data.getSkuName());
 		
-		List<IEssotEntity> specList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuNameList);
+		List<IEssotEntity> specList = daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_TECH_SPEC).getFilteredListOnPrimarKey(skuNameList);
 		
 		if(specList != null && !specList.isEmpty()){
 			for(IEssotEntity techSpec : specList ) {
@@ -348,7 +335,7 @@ public class ExcelDataHelper {
 			entity.setTechKey(splitSpec[0]);
 			entity.setValue(splitSpec[1]);
 				
-			this.persistEntity(entity);
+			this.persistEntity(entity, EssotDAOEnum.PRODUCT_X_TECH_SPEC);
 		}
 	}
 	
@@ -358,14 +345,10 @@ public class ExcelDataHelper {
 	public void pushRelSKUs(BasicExcelData data){
 		List<String> relSKUs = data.getRelSKU();
 		
-		//getAll EnCodes
-		RelatedSKUs blank = new RelatedSKUs();
-		blank.setSku(data.getSkuName());
-		
 		Collection<Object> skuNameList = new ArrayList<Object>();
 		skuNameList.add(data.getSkuName());
 		
-		List<IEssotEntity> relSKUList = daoFactory.getDAOClass(blank).getFilteredListOnPrimarKey(skuNameList);
+		List<IEssotEntity> relSKUList = daoFactory.getDAO(EssotDAOEnum.RELATED_SKU).getFilteredListOnPrimarKey(skuNameList);
 		
 		if(relSKUList != null && !relSKUList.isEmpty()){
 			for(IEssotEntity relSKU : relSKUList ){
@@ -375,6 +358,7 @@ public class ExcelDataHelper {
 				}							
 			}
 		}
+		
 		for(String relsku : relSKUs){
 			RelatedSKUs entity = new RelatedSKUs();
 			
@@ -384,15 +368,15 @@ public class ExcelDataHelper {
 			entity.setUpdateDate(new Date());
 			entity.setActiveFlag("Y");
 				
-			this.persistEntity(entity);
+			this.persistEntity(entity, EssotDAOEnum.RELATED_SKU);
 		}
 	}
 	/**
 	 * 
 	 * @param entity
 	 */
-	private Serializable persistEntity(IEssotEntity entity){
-		return daoFactory.getDAOClass(entity).persistEntity(entity);
+	private Serializable persistEntity(IEssotEntity entity, EssotDAOEnum daoToUse){
+		return daoFactory.getDAO(daoToUse).persistEntity(entity);
 	}
 	
 	/**

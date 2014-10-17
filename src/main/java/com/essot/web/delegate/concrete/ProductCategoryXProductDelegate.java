@@ -19,28 +19,28 @@ public class ProductCategoryXProductDelegate extends EssotDelegate {
 	 * 
 	 */
 	public void persistEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).persistEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).persistEntity(entity);
 	}
 
 	/**
 	 * 
 	 */
 	public IEssotEntity findEntityById(Integer id) {
-		return daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).findEntityById(id);
+		return daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).findEntityById(id);
 	}
 
 	/**
 	 * 
 	 */
 	public void updateEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).updateEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).updateEntity(entity);
 	}
 
 	/**
 	 * 
 	 */
 	public void deleteEntity(IEssotEntity entity) {
-		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).deleteEntity(entity);
+		daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).deleteEntity(entity);
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class ProductCategoryXProductDelegate extends EssotDelegate {
 	
 		categoryKeys = MenuUtil.getSubMenus(new Integer(key));
 	
-		List<IEssotEntity>  categoryProductList =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).getFilteredListOnPrimarKey(categoryKeys);
+		List<IEssotEntity>  categoryProductList =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).getFilteredListOnPrimarKey(categoryKeys);
 		
 		if(categoryProductList != null && !categoryProductList.isEmpty()){
 			for(IEssotEntity categoryProduct : categoryProductList){
@@ -69,7 +69,7 @@ public class ProductCategoryXProductDelegate extends EssotDelegate {
 			}
 		}
 		
-		List<IEssotEntity>  productList =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(relatedSKUNames);
+		List<IEssotEntity>  productList =  daoFactory.getDAO(EssotDAOEnum.PRODUCT).getFilteredListOnPrimarKey(relatedSKUNames);
 		if(productList != null && !productList.isEmpty()){
 			for(IEssotEntity product : productList){
 				if("Y".equalsIgnoreCase(((Product)product).getActiveFlag())){
