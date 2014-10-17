@@ -10,6 +10,7 @@ import com.essot.web.backend.entity.concrete.ProductCategoryXProduct;
 import com.essot.web.backend.entity.concrete.ProductXENCode;
 import com.essot.web.backend.entity.concrete.ProductXFeature;
 import com.essot.web.backend.entity.concrete.ProductXTechSpec;
+import com.essot.web.util.EssotDAOEnum;
 
 public class DAOFactory {
 	
@@ -34,6 +35,11 @@ public class DAOFactory {
 	@Autowired
 	private IEssotDAO relatedSKUDAO;
 	
+	/**
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	public IEssotDAO getDAOClass(IEssotEntity entity){
 		if(entity instanceof Product){
 			return productDAO;
@@ -53,5 +59,32 @@ public class DAOFactory {
 		
 			return null;
 		}
+	}
+	
+	/**
+	 * 
+	 * @param requestedDAO
+	 * @return
+	 */
+	public IEssotDAO getDAOClassByDAOEnum(EssotDAOEnum requestedDAO){
+		
+		switch(requestedDAO){
+		case PRODUCT_CATEGORY :
+			return productCategoryDAO;
+		case PRODUCT_CATEGORY_X_PRODUCT :
+			return productCategoryXProductDAO;
+		case PRODUCT :
+			return productDAO;
+		case PRODUCT_X_EN_CODE :
+			return productEnCodeDAO;
+		case PRODUCT_X_FEATURE :
+			return productFeatureDAO;
+		case PRODUCT_X_TECH_SPEC :
+			return productTechSpecDAO;
+		case RELATED_SKU :
+			return relatedSKUDAO;
+		default :
+			return null;
+		}		
 	}
 }

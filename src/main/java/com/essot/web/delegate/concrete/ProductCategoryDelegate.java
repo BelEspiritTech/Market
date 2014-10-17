@@ -5,9 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.essot.web.backend.dao.IEssotDAO;
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.ProductCategory;
 import com.essot.web.controller.data.CategoryDetails;
@@ -15,13 +12,15 @@ import com.essot.web.controller.data.GetProductCategoryResponse;
 import com.essot.web.controller.data.Menu;
 import com.essot.web.controller.data.MenuData;
 import com.essot.web.delegate.EssotDelegate;
+import com.essot.web.util.EssotDAOEnum;
 import com.essot.web.util.MenuUtil;
 
 public class ProductCategoryDelegate extends EssotDelegate {
-
-	@Autowired
-	IEssotDAO productCategoryDAO;
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public List<CategoryDetails> getDisplayCategories(){
 		
 		List<CategoryDetails> categoryDetails = new ArrayList<CategoryDetails>();
@@ -139,7 +138,7 @@ public class ProductCategoryDelegate extends EssotDelegate {
 		Integer intKey = new Integer(key);
 		
 		do{
-			IEssotEntity  category =  productCategoryDAO.findEntityById(intKey);
+			IEssotEntity  category =  daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(intKey);
 			
 			if(category != null){
 				if("Y".equalsIgnoreCase(((ProductCategory)category).getActiveFlag())){
@@ -159,20 +158,32 @@ public class ProductCategoryDelegate extends EssotDelegate {
 		return response;
 	}
 	
+	/**
+	 * 
+	 */
 	public void persistEntity(IEssotEntity entity) {
-		productCategoryDAO.persistEntity(entity);
+		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).persistEntity(entity);
 	}
 
+	/**
+	 * 
+	 */
 	public IEssotEntity findEntityById(Integer id) {
-		return productCategoryDAO.findEntityById(id);
+		return daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(id);
 	}
 
+	/**
+	 * 
+	 */
 	public void updateEntity(IEssotEntity entity) {
-		productCategoryDAO.updateEntity(entity);
+		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).updateEntity(entity);
 	}
 
+	/**
+	 * 
+	 */
 	public void deleteEntity(IEssotEntity entity) {
-		productCategoryDAO.deleteEntity(entity);
+		daoFactory.getDAOClassByDAOEnum(EssotDAOEnum.PRODUCT_CATEGORY).deleteEntity(entity);
 	}
 	
 	/**
@@ -191,6 +202,4 @@ public class ProductCategoryDelegate extends EssotDelegate {
 	public void clearCache(){
 		MenuUtil.clearMenuCache();
 	}
-
-
 }
