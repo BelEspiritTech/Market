@@ -18,9 +18,9 @@ public class BasicExcelData {
 	
 	private String longDesc;
 	
-	private Integer price;
+	private Integer price = new Integer(0);
 	
-	private Integer priority;
+	private Integer priority = new Integer(0);
 	
 	private String activeFlag;
 	

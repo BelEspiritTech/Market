@@ -180,17 +180,21 @@ public class DataUploadDelegate {
 				data.setProductName(productName);
 				data.setShortDesc(shortDesc);
 				data.setLongDesc(longDesc);
-				data.setPrice(new Integer(price.intValue()));
-				data.setPriority(skuPriority.intValue());
+				if(price != null){								
+					data.setPrice(new Integer(price.intValue()));
+				}
+				if(skuPriority != null){
+					data.setPriority(skuPriority.intValue());
+				}
 				data.setActiveFlag(activeFlag);
 				//save product
 				excelHelper.updateProductInfo(data);
 			}			
 		}
-		Cell relSKUCell	  = currentRow.getCell(9, Row.RETURN_BLANK_AS_NULL);
-		Cell enCodeCell   = currentRow.getCell(10, Row.RETURN_BLANK_AS_NULL);
-		Cell featureCell  = currentRow.getCell(11, Row.RETURN_BLANK_AS_NULL);
-		Cell techSpecCell = currentRow.getCell(12, Row.RETURN_BLANK_AS_NULL);
+		Cell relSKUCell	  = currentRow.getCell(10, Row.RETURN_BLANK_AS_NULL);
+		Cell enCodeCell   = currentRow.getCell(11, Row.RETURN_BLANK_AS_NULL);
+		Cell featureCell  = currentRow.getCell(12, Row.RETURN_BLANK_AS_NULL);
+		Cell techSpecCell = currentRow.getCell(13, Row.RETURN_BLANK_AS_NULL);
 		
 		String enCode   	= enCodeCell != null ? enCodeCell.getStringCellValue() : null;
 		String feature  	= featureCell != null ? featureCell.getStringCellValue() : null;

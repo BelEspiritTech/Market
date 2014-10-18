@@ -52,12 +52,11 @@ public class ProductCategoryXProductDelegate extends EssotDelegate {
 		
 		GetProductCategoryResponse response = new GetProductCategoryResponse();
 		List<ProductCategoryDetails> categoryDetails = new ArrayList<ProductCategoryDetails>();
-		Collection<Object> categoryKeys   = new ArrayList<Object>();
 		Collection<Object> relatedSKUNames = new ArrayList<Object>();
 		
 		List<String> bannerList = new ArrayList<String>();
 	
-		categoryKeys = MenuUtil.getSubMenus(new Integer(key));
+		Collection<Object> categoryKeys = MenuUtil.getSubMenus(new Integer(key));
 	
 		List<IEssotEntity>  categoryProductList =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY_X_PRODUCT).getFilteredListOnPrimarKey(categoryKeys);
 		

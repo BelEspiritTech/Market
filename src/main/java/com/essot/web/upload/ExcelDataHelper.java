@@ -179,7 +179,6 @@ public class ExcelDataHelper {
 			entity.setParentSkuName("");
 			entity.setPickableFlag("");
 			entity.setPreConfigFlag(0);
-			entity.setPriority(0);
 			entity.setProductColor("");
 			entity.setQtyPerUnit(0d);
 			entity.setResourceKey(0);

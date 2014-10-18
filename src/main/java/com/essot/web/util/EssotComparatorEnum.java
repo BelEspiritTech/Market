@@ -4,7 +4,12 @@ public enum EssotComparatorEnum {
 	/**
 	 * Business Case HOME Products.
 	 */
-	HOME_PRODUCTS("HomeProducts");
+	HOME_PRODUCTS("HomeProducts"),
+	
+	/**
+	 * Business Case Get Menu.
+	 */
+	GET_MENU("GetMenu");
 	
 	/**
 	 * value of the enum constant.

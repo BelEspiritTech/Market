@@ -2,6 +2,7 @@ package com.essot.web.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,8 +76,9 @@ public class MenuUtil {
 		subCategories.add(categoryID);
 		
 		List<MenuData> allCategories = MenuUtil.getCategories();
+		Collections.sort(allCategories, EssotComparatorFactory.getInstance(EssotComparatorEnum.GET_MENU));
 		for(MenuData details : allCategories){
-			if(details.getParentCategoryID().equals(categoryID)){
+			if(details.getParentCategoryID().equals(categoryID) || subCategories.contains(details.getParentCategoryID())){
 				subCategories.add(details.getCategoryID());
 			}
 		}
@@ -152,30 +154,33 @@ public class MenuUtil {
 			IEssotEntity subCategory = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(catKey);
 			if(subCategory != null){
 				Integer parentKey = ((ProductCategory)subCategory).getParentCategoryKey();
-				if(!categoryKeys.contains(parentKey)){
-					while(parentKey != 0){
-						IEssotEntity category = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(parentKey);
-						if(category != null){
-							categoryKeys.add(parentKey);
-							parentKey = ((ProductCategory)category).getParentCategoryKey();
-							MenuData catData = new MenuData();
-							catData.setCategoryID(((ProductCategory)category).getProductCategoryKey());
-							catData.setCategoryName(((ProductCategory)category).getName());
-							catData.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
-							catData.setPriority(((ProductCategory)category).getPriority());
-							list.add(catData);
-							MenuUtil.addCategoryToCache(catData);
-						}
+				while(parentKey != 0){
+					IEssotEntity category = daoFactory.getDAO(EssotDAOEnum.PRODUCT_CATEGORY).findEntityById(parentKey);
+					if(category != null && !categoryKeys.contains(parentKey)){
+						categoryKeys.add(parentKey);
+						parentKey = ((ProductCategory)category).getParentCategoryKey();
+						MenuData catData = new MenuData();
+						catData.setCategoryID(((ProductCategory)category).getProductCategoryKey());
+						catData.setCategoryName(((ProductCategory)category).getName());
+						catData.setParentCategoryID(((ProductCategory)category).getParentCategoryKey());
+						catData.setPriority(((ProductCategory)category).getPriority());
+						list.add(catData);
+						MenuUtil.addCategoryToCache(catData);
 					}
+					if(categoryKeys.contains(parentKey)){
+						break;
+					}					
+				}				
+				if(!categoryKeys.contains(((ProductCategory)subCategory).getProductCategoryKey())){			
+					MenuData subCatData = new MenuData();
+					subCatData.setCategoryID(((ProductCategory)subCategory).getProductCategoryKey());
+					subCatData.setCategoryName(((ProductCategory)subCategory).getName());
+					subCatData.setParentCategoryID(((ProductCategory)subCategory).getParentCategoryKey());
+					subCatData.setPriority(((ProductCategory)subCategory).getPriority());
+					categoryKeys.add(((ProductCategory)subCategory).getProductCategoryKey());
+					list.add(subCatData);
+					MenuUtil.addCategoryToCache(subCatData);					
 				}
-				
-				MenuData subCatData = new MenuData();
-				subCatData.setCategoryID(((ProductCategory)subCategory).getProductCategoryKey());
-				subCatData.setCategoryName(((ProductCategory)subCategory).getName());
-				subCatData.setParentCategoryID(((ProductCategory)subCategory).getParentCategoryKey());
-				subCatData.setPriority(((ProductCategory)subCategory).getPriority());
-				list.add(subCatData);
-				MenuUtil.addCategoryToCache(subCatData);
 			}
 		}
 		return list;
