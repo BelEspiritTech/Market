@@ -59,6 +59,10 @@ public class DataUploadDelegate {
 	        
 	        Iterator<Row> catIterator = sheet.iterator();
 	        
+	        if(MenuUtil.getCategories() == null || MenuUtil.getCategories().isEmpty() ){
+	        	excelHelper.setValidCategoryCache();
+	        }
+	        
 	        while (catIterator.hasNext()) {
 	        	Row row = catIterator.next();
 	        	
