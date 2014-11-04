@@ -46,4 +46,9 @@ public class ProductCategoryDAO implements IEssotDAO {
 	public List<IEssotEntity> searchOnIndexes(Collection<Object> filter) {
 		return null;
 	}
+
+	public List<IEssotEntity> getByColumn(Object value, Object column) {
+		String sql = "FROM  ProductCategory p WHERE p."+column+" = (:value)";
+		return sessionFactory.getCurrentSession().createQuery(sql).setParameter("value", value).list();
+	}
 }

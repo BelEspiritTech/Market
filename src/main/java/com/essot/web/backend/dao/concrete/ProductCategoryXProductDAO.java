@@ -45,4 +45,7 @@ public class ProductCategoryXProductDAO implements IEssotDAO {
 	public List<IEssotEntity> searchOnIndexes(Collection<Object> filter) {
 		return null;
 	}
+	public List<IEssotEntity> getByColumn(Object value, Object column) {
+		return null;
+	}
 }

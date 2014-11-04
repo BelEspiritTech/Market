@@ -47,5 +47,9 @@ public class ProductDAO implements IEssotDAO {
 		return sessionFactory.getCurrentSession().createQuery(sql).setParameter("searchKey", "%"+filter.toArray()[0] +"%").list();
 	}
 	
+	public List<IEssotEntity> getByColumn(Object value, Object column) {
+		return null;
+	}
+	
 	
 }

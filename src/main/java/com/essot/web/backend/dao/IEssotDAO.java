@@ -17,4 +17,5 @@ public interface IEssotDAO {
 	List<IEssotEntity> getFilteredListOnPrimarKey(Collection<Object> keys);
 	
 	List<IEssotEntity> searchOnIndexes(Collection<Object> filter);
+	List<IEssotEntity> getByColumn(Object value, Object column);
 }
