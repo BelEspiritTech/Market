@@ -30,10 +30,20 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>FBDumpServlet</servlet-name>
+		<display-name>FBDumpServlet</display-name>
+		<description></description>
+		<servlet-class>com.essot.web.servlet.FBDumpServlet</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>jersey-serlvet</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FBDumpServlet</servlet-name>
+		<url-pattern>/FBDumpServlet</url-pattern>
 	</servlet-mapping>
 	
 	<welcome-file-list>

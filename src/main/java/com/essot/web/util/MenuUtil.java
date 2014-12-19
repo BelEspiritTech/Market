@@ -88,6 +88,29 @@ public class MenuUtil {
 	
 	/**
 	 * 
+	 * @param categoryID
+	 * @return
+	 */
+	public static String getChildCategoryForSecondLevel(Integer categoryID){
+		String retValue = "";
+		
+		List<MenuData> allCategories = MenuUtil.getCategories();
+		Collections.sort(allCategories, EssotComparatorFactory.getInstance(EssotComparatorEnum.GET_MENU));
+		for(MenuData details : allCategories){
+			if(details.getParentCategoryID().equals(categoryID)){
+				retValue = details.getCategoryName();
+			}
+		}
+		
+		if(retValue == null || "".equals(retValue)){
+			retValue = "FEATURED PRODUCTS";
+		}
+		
+		return retValue;
+	}
+	
+	/**
+	 * 
 	 * @param detail
 	 */
 	public static void addCategoryToCache(MenuData detail){

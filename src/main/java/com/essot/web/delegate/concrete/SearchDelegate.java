@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.essot.web.backend.entity.IEssotEntity;
 import com.essot.web.backend.entity.concrete.Product;
+import com.essot.web.backend.entity.concrete.ProductXFeature;
 import com.essot.web.controller.data.ProductCategoryDetails;
 import com.essot.web.controller.data.ProductDetails;
 import com.essot.web.delegate.EssotDelegate;
@@ -39,7 +40,22 @@ public class SearchDelegate extends EssotDelegate {
 				product.setPrice(((Product)productEntity).getB2cNowPrice());
 				product.setLongDescription(((Product)productEntity).getLongDescription());
 				
+				Collection<Object> sku = new ArrayList<Object>();
+				sku.add(product.getSkuName());
+				
+				List<IEssotEntity> features =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_FEATURE).getFilteredListOnPrimarKey(sku);
+				
+				if(features != null && !features.isEmpty()){
+					for(IEssotEntity feature : features){
+						product.addTopFeatures(((ProductXFeature)feature).getValue());
+						if(product.getTopFeatures().size() == 2){
+							break;
+						}
+					}
+				}
+				
 				productDetails.setProductDetails(product);
+				
 				
 				searchResults.add(productDetails);
 			}

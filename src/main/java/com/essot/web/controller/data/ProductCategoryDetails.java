@@ -1,5 +1,8 @@
 package com.essot.web.controller.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ProductCategoryDetails {
 	
@@ -14,6 +17,8 @@ public class ProductCategoryDetails {
 	private Integer price;
 	
 	private Integer priority;
+	
+	private List<String> topFeatures = new ArrayList<String>();
 
 	public String getSkuName() {
 		return skuName;
@@ -73,5 +78,26 @@ public class ProductCategoryDetails {
 	 */
 	public void setPriority(Integer priority) {
 		this.priority = priority;
+	}
+
+	/**
+	 * @return the topFeatures
+	 */
+	public List<String> getTopFeatures() {
+		return topFeatures;
+	}
+
+	/**
+	 * @param topFeatures the topFeatures to set
+	 */
+	public void setTopFeatures(List<String> topFeatures) {
+		this.topFeatures = topFeatures;
+	}
+	
+	/**
+	 * @param topFeatures the topFeatures to set
+	 */
+	public void addTopFeatures(String topFeatures) {
+		this.topFeatures.add(topFeatures);
 	}
 }

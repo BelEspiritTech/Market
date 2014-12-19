@@ -12,6 +12,8 @@ public class GetProductCategoryResponse {
 	private List<String> bannerList;
 	
 	private String categories; 
+	
+	private String headerText = "FEATURED PRODUCTS";
 
 	public List<ProductCategoryDetails> getProducts() {
 		return products;
@@ -36,5 +38,18 @@ public class GetProductCategoryResponse {
 	public void setCategories(String categories) {
 		this.categories = categories;
 	}
-	
+
+	/**
+	 * @return the headerText
+	 */
+	public String getHeaderText() {
+		return headerText;
+	}
+
+	/**
+	 * @param headerText the headerText to set
+	 */
+	public void setHeaderText(String headerText) {
+		this.headerText = headerText;
+	}	
 }
