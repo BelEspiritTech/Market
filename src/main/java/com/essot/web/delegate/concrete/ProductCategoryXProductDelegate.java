@@ -12,6 +12,7 @@ import com.essot.web.controller.data.GetProductCategoryResponse;
 import com.essot.web.controller.data.ProductCategoryDetails;
 import com.essot.web.delegate.EssotDelegate;
 import com.essot.web.util.EssotDAOEnum;
+import com.essot.web.util.HTTPUtil;
 import com.essot.web.util.MenuUtil;
 
 public class ProductCategoryXProductDelegate extends EssotDelegate {
@@ -98,7 +99,7 @@ public class ProductCategoryXProductDelegate extends EssotDelegate {
 						}
 					}
 					
-					if(((Product)product).getPriority() != null && ((Product)product).getPriority() > 0 && ((Product)product).getPriority() <= 3){
+					if(HTTPUtil.isBannerAvailable(((Product)product).getSkuName())){
 						bannerList.add(((Product)product).getSkuName());
 					}
 					

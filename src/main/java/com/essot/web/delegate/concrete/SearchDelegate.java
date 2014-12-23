@@ -30,34 +30,34 @@ public class SearchDelegate extends EssotDelegate {
 		if(products != null && !products.isEmpty()){
 			for(IEssotEntity productEntity : products){
 				
-				ProductDetails productDetails = new ProductDetails();
-				
-				ProductCategoryDetails product = new ProductCategoryDetails();
-				
-				product.setDescription(((Product)productEntity).getDescription());
-				product.setName(((Product)productEntity).getName());
-				product.setSkuName(((Product)productEntity).getSkuName());
-				product.setPrice(((Product)productEntity).getB2cNowPrice());
-				product.setLongDescription(((Product)productEntity).getLongDescription());
-				
-				Collection<Object> sku = new ArrayList<Object>();
-				sku.add(product.getSkuName());
-				
-				List<IEssotEntity> features =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_FEATURE).getFilteredListOnPrimarKey(sku);
-				
-				if(features != null && !features.isEmpty()){
-					for(IEssotEntity feature : features){
-						product.addTopFeatures(((ProductXFeature)feature).getValue());
-						if(product.getTopFeatures().size() == 2){
-							break;
+				if("Y".equals(((Product)productEntity).getActiveFlag())){
+					ProductDetails productDetails = new ProductDetails();
+					
+					ProductCategoryDetails product = new ProductCategoryDetails();
+					
+					product.setDescription(((Product)productEntity).getDescription());
+					product.setName(((Product)productEntity).getName());
+					product.setSkuName(((Product)productEntity).getSkuName());
+					product.setPrice(((Product)productEntity).getB2cNowPrice());
+					product.setLongDescription(((Product)productEntity).getLongDescription());
+					
+					Collection<Object> sku = new ArrayList<Object>();
+					sku.add(product.getSkuName());
+					
+					List<IEssotEntity> features =  daoFactory.getDAO(EssotDAOEnum.PRODUCT_X_FEATURE).getFilteredListOnPrimarKey(sku);
+					
+					if(features != null && !features.isEmpty()){
+						for(IEssotEntity feature : features){
+							product.addTopFeatures(((ProductXFeature)feature).getValue());
+							if(product.getTopFeatures().size() == 2){
+								break;
+							}
 						}
 					}
-				}
-				
-				productDetails.setProductDetails(product);
-				
-				
-				searchResults.add(productDetails);
+					
+					productDetails.setProductDetails(product);
+					searchResults.add(productDetails);				
+				}			
 			}
 		}
 	
