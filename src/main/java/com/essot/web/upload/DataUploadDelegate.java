@@ -1,21 +1,20 @@
 package com.essot.web.upload;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import com.essot.web.upload.data.BasicExcelData;
+import com.essot.web.util.MenuUtil;
+import com.essot.web.util.ResourceReader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.essot.web.upload.data.BasicExcelData;
-import com.essot.web.util.MenuUtil;
-import com.essot.web.util.ResourceReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class DataUploadDelegate {
 	
@@ -104,11 +103,10 @@ public class DataUploadDelegate {
 	private void processRow(Row row){
 		this.processProductData(row);
 	}
-	
+
 	/**
-	 * 
-	 * @param categoryCell
-	 * @param subCategoryCell
+	 *
+	 * @param currentRow
 	 */
 	private void processCategory(Row currentRow){
 		Cell categoryCell 	 = currentRow.getCell(0, Row.RETURN_BLANK_AS_NULL);
@@ -142,11 +140,10 @@ public class DataUploadDelegate {
 			}
 		}
 	}
-	
+
 	/**
-	 * 
-	 * @param categoryCell
-	 * @param subCategoryCell
+	 *
+	 * @param currentRow
 	 */
 	private void processProductData(Row currentRow){
 		Cell catxprodCell	 = currentRow.getCell(2,Row.RETURN_BLANK_AS_NULL);
@@ -200,13 +197,13 @@ public class DataUploadDelegate {
 		Cell featureCell  = currentRow.getCell(12, Row.RETURN_BLANK_AS_NULL);
 		Cell techSpecCell = currentRow.getCell(13, Row.RETURN_BLANK_AS_NULL);
 		
-		String enCode   	= enCodeCell != null ? enCodeCell.getStringCellValue() : null;
+		Double enCode   	= enCodeCell != null ? enCodeCell.getNumericCellValue() : null;
 		String feature  	= featureCell != null ? featureCell.getStringCellValue() : null;
 		String techSpec		= techSpecCell != null ? techSpecCell.getStringCellValue() : null;
 		String relSKU 		= relSKUCell != null ? relSKUCell.getStringCellValue() : null;
 		
 		if(enCode != null){
-			data.addEnCode(enCode);
+			data.addEnCode(String.valueOf(enCode));
 		}
 		
 		if(feature != null){
@@ -243,4 +240,6 @@ public class DataUploadDelegate {
 			data.getRelSKU().clear();
 		}
 	}
+
+
 }
